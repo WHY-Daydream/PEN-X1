@@ -1,0 +1,4 @@
+{"key":"baseline-1","scenario":"baseline","exit":0,"ms":250130,"success":true,"tail":""}
+{"key":"baseline-2","scenario":"baseline","exit":0,"ms":250130,"success":true,"tail":""}
+{"key":"baseline-3","scenario":"baseline","exit":null,"ms":250109,"success":false,"tail":""}
+{"key":"baseline-4","scenario":"baseline","exit":null,"ms":250113,"success":false,"tail":""}
