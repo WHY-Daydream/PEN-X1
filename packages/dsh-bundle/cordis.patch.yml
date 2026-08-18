@@ -1,0 +1,121 @@
+# PEN-X1 插件 Bundle patch：按方案 §5.2 挂载顺序 insert 17 个插件。
+# DSH bundle 层使用 `- insert:` 列表追加插件行（覆盖已有条目请用 id-targeted 写法）。
+# 插件 name 用包子路径导出（@penx1/dsh-*/<entry>）；开发验证可替换为绝对路径。
+
+- insert:
+    - id: penx1-run-state
+      name: '@penx1/dsh-core/run-state'
+      config:
+        maxRunsPerSession: 5
+        maxArtifactsPerRun: 500
+        replayOnLoad: true
+        allowConcurrentRuns: false
+    - id: penx1-evidence-guard
+      name: '@penx1/dsh-core/evidence-guard'
+      config:
+        supportedThreshold: 0.80
+        conditionalThreshold: 0.60
+        requireEvidenceForEveryClaim: true
+        requireAllRiskFields: true
+        mockBaseWeight: 0.70
+        inferenceBaseWeight: 0.40
+        blockListingOnCriticalMissing: true
+        requireMockLabels: true
+    - id: penx1-policy
+      name: '@penx1/dsh-core/policy'
+      config:
+        promptFile: 'prompts/penx1-system.md'
+        language: 'zh-CN'
+        includeEnglishReviewRules: true
+        includeMockBanner: true
+    - id: penx1-task-planner
+      name: '@penx1/dsh-core/task-planner'
+      config:
+        planVersion: 'penx1-dag-v1'
+        allowModelToAddOptionalTasks: false
+    - id: penx1-knowledge
+      name: '@penx1/dsh-data/knowledge'
+      config:
+        knowledgeFile: 'data/knowledge_base.json'
+        dataRoot: 'data'
+        topKProduct: 5
+        topKCompetitor: 8
+        topKTechnical: 5
+        topKConstraint: 5
+        retrievalMode: 'lexical'
+        watchFiles: false
+    - id: penx1-market-mock-provider
+      name: '@penx1/dsh-data/market-source-mock'
+      config:
+        dataFile: 'data/mock_prices.json'
+        dataRoot: 'data'
+        scenario: 'baseline'
+        latencyMs: 150
+        failureRate: 0
+    - id: penx1-market-tool
+      name: '@penx1/dsh-data/market-tool'
+      config: {}
+    - id: penx1-review-mock-provider
+      name: '@penx1/dsh-data/review-source-mock'
+      config:
+        dataFile: 'data/mock_reviews.json'
+        dataRoot: 'data'
+        scenario: 'baseline'
+        defaultLanguage: 'en-US'
+        latencyMs: 150
+        failureRate: 0
+    - id: penx1-review-tool
+      name: '@penx1/dsh-data/review-tool'
+      config: {}
+    - id: penx1-market-analysis
+      name: '@penx1/dsh-analysis/market-analysis'
+      config:
+        maxClaims: 8
+        allowUnverifiedNumericClaims: false
+    - id: penx1-review-mining
+      name: '@penx1/dsh-analysis/review-mining'
+      config:
+        minimumClusterSize: 1
+        lowConfidenceCutoff: 0.60
+        maxClusters: 10
+    - id: penx1-opportunity
+      name: '@penx1/dsh-analysis/opportunity'
+      config:
+        maxOpportunities: 6
+        requireEngineeringDependency: true
+        requireCrossDomainEvidence: true
+    - id: penx1-swot
+      name: '@penx1/dsh-analysis/swot'
+      config:
+        minItemsPerQuadrant: 2
+        maxItemsPerQuadrant: 4
+        rejectGenericStatements: true
+    - id: penx1-risk
+      name: '@penx1/dsh-analysis/risk'
+      config:
+        minimumRiskCount: 10
+        requiredPhases: ['R&D', 'MASS_PRODUCTION', 'OVERSEAS_LAUNCH']
+    - id: penx1-report
+      name: '@penx1/dsh-analysis/report'
+      config:
+        outputDir: 'output/dsh'
+        fileNamePattern: 'PEN-X1_DSH_Report_{runId}.md'
+        includeEvidenceLedger: true
+        includeRunTrace: true
+        overwrite: false
+    - id: penx1-workflow-guard
+      name: '@penx1/dsh-core/workflow-guard'
+      config:
+        maxSteps: 18
+        maxRetriesPerTool: 2
+        allowParallelDataTools: true
+        allowParallelFinalAnalyses: true
+        blockUnknownTools: true
+        continueOnNonCriticalSourceMissing: true
+    - id: penx1-trace
+      name: '@penx1/dsh-core/trace'
+      config:
+        verbosity: 'concise'
+        emitProgressCards: true
+        includePayloads: false
+        includeTimings: true

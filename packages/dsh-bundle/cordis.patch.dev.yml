@@ -1,0 +1,120 @@
+# PEN-X1 开发验证 patch：插件入口与数据路径全部绝对化（G1-B 真实挂载验证用）。
+# 生产发布仍使用 cordis.patch.yml（包子路径 + profile 安装）。
+
+- insert:
+    - id: penx1-run-state
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-core/src/run-state.ts'
+      config:
+        maxRunsPerSession: 5
+        maxArtifactsPerRun: 500
+        replayOnLoad: true
+        allowConcurrentRuns: false
+    - id: penx1-evidence-guard
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-core/src/evidence-guard.ts'
+      config:
+        supportedThreshold: 0.80
+        conditionalThreshold: 0.60
+        requireEvidenceForEveryClaim: true
+        requireAllRiskFields: true
+        mockBaseWeight: 0.70
+        inferenceBaseWeight: 0.40
+        blockListingOnCriticalMissing: true
+        requireMockLabels: true
+    - id: penx1-policy
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-core/src/policy.ts'
+      config:
+        promptFile: '/mnt/workspace/DSH/Power Availability/prompts/penx1-system.md'
+        language: 'zh-CN'
+        includeEnglishReviewRules: true
+        includeMockBanner: true
+    - id: penx1-task-planner
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-core/src/task-planner.ts'
+      config:
+        planVersion: 'penx1-dag-v1'
+        allowModelToAddOptionalTasks: false
+    - id: penx1-knowledge
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-data/src/knowledge.ts'
+      config:
+        knowledgeFile: '/mnt/workspace/DSH/Power Availability/data/knowledge_base.json'
+        dataRoot: '/mnt/workspace/DSH/Power Availability/data'
+        topKProduct: 5
+        topKCompetitor: 8
+        topKTechnical: 5
+        topKConstraint: 5
+        retrievalMode: 'lexical'
+        watchFiles: false
+    - id: penx1-market-mock-provider
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-data/src/market-source-mock.ts'
+      config:
+        dataFile: '/mnt/workspace/DSH/Power Availability/data/mock_prices.json'
+        dataRoot: '/mnt/workspace/DSH/Power Availability/data'
+        scenario: 'baseline'
+        latencyMs: 150
+        failureRate: 0
+    - id: penx1-market-tool
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-data/src/market-tool.ts'
+      config: {}
+    - id: penx1-review-mock-provider
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-data/src/review-source-mock.ts'
+      config:
+        dataFile: '/mnt/workspace/DSH/Power Availability/data/mock_reviews.json'
+        dataRoot: '/mnt/workspace/DSH/Power Availability/data'
+        scenario: 'baseline'
+        defaultLanguage: 'en-US'
+        latencyMs: 150
+        failureRate: 0
+    - id: penx1-review-tool
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-data/src/review-tool.ts'
+      config: {}
+    - id: penx1-market-analysis
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-analysis/src/market-analysis.ts'
+      config:
+        maxClaims: 8
+        allowUnverifiedNumericClaims: false
+    - id: penx1-review-mining
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-analysis/src/review-mining.ts'
+      config:
+        minimumClusterSize: 1
+        lowConfidenceCutoff: 0.60
+        maxClusters: 10
+    - id: penx1-opportunity
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-analysis/src/opportunity.ts'
+      config:
+        maxOpportunities: 6
+        requireEngineeringDependency: true
+        requireCrossDomainEvidence: true
+    - id: penx1-swot
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-analysis/src/swot.ts'
+      config:
+        minItemsPerQuadrant: 2
+        maxItemsPerQuadrant: 4
+        rejectGenericStatements: true
+    - id: penx1-risk
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-analysis/src/risk.ts'
+      config:
+        minimumRiskCount: 10
+        requiredPhases: ['R&D', 'MASS_PRODUCTION', 'OVERSEAS_LAUNCH']
+    - id: penx1-report
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-analysis/src/report.ts'
+      config:
+        outputDir: '/mnt/workspace/DSH/Power Availability/output/dsh'
+        fileNamePattern: 'PEN-X1_DSH_Report_{runId}.md'
+        includeEvidenceLedger: true
+        includeRunTrace: true
+        overwrite: false
+    - id: penx1-workflow-guard
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-core/src/workflow-guard.ts'
+      config:
+        maxSteps: 18
+        maxRetriesPerTool: 2
+        allowParallelDataTools: true
+        allowParallelFinalAnalyses: true
+        blockUnknownTools: true
+        continueOnNonCriticalSourceMissing: true
+    - id: penx1-trace
+      name: '/mnt/workspace/DSH/Power Availability/packages/dsh-core/src/trace.ts'
+      config:
+        verbosity: 'concise'
+        emitProgressCards: true
+        includePayloads: false
+        includeTimings: true

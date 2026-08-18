@@ -18,6 +18,11 @@
     "cordis.yml"
   ],
   "license": "MIT",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
   "scripts": {
     "typecheck": "tsc --noEmit --pretty false"
   },

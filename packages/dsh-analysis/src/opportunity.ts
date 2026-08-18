@@ -101,8 +101,9 @@ export function apply(ctx: Context, config: Config): void {
         for (const ref of opportunity.evidenceRefs) {
           try {
             const item = ctx.penx1Evidence.getEvidence(args.runId, ref)
-            if (item.sourceRef.includes('mock_prices')) domains.set(ref, 'market')
-            if (item.sourceRef.includes('mock_reviews')) domains.set(ref, 'review')
+            const domain = (item.content as { domain?: string } | null)?.domain
+            if (domain === 'market' || item.sourceRef.includes('mock_prices')) domains.set(ref, 'market')
+            if (domain === 'review' || item.sourceRef.includes('mock_reviews')) domains.set(ref, 'review')
           } catch (error) {
             if (error instanceof Penx1Error && error.code === 'EVIDENCE_NOT_FOUND') {
               throw new Penx1Error('EVIDENCE_NOT_FOUND', `机会点 ${opportunity.opportunityId} 引用未登记 Evidence：${ref}`)

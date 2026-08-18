@@ -1,0 +1,24 @@
+[
+  {
+    "conflictId": "CFL-001",
+    "type": "TEMPORAL_VARIANCE",
+    "subject": "BrandA.price",
+    "evidenceIds": [
+      "MOCK-PRICE-001",
+      "MOCK-PRICE-002"
+    ],
+    "description": "BrandA.price 存在不一致取值：29.99 / 27.99（TEMPORAL_VARIANCE）",
+    "resolved": false
+  },
+  {
+    "conflictId": "CFL-002",
+    "type": "HARD_CONFLICT",
+    "subject": "BrandB.price",
+    "evidenceIds": [
+      "MOCK-PRICE-003",
+      "MOCK-PRICE-004"
+    ],
+    "description": "BrandB.price 存在不一致取值：34.95 / 31.95（HARD_CONFLICT）",
+    "resolved": false
+  }
+]

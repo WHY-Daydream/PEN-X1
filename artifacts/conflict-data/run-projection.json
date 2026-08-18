@@ -1,0 +1,47 @@
+{
+  "runId": "RUN-001",
+  "sessionId": "g4-conflict",
+  "phase": "DATA_READY",
+  "completed": {
+    "runStarted": true,
+    "planReady": true,
+    "knowledgeReady": true,
+    "marketDataReady": true,
+    "reviewDataReady": true
+  },
+  "artifactIds": [
+    "TASK-PLAN-RUN-001",
+    "MARKET-SNAPSHOT-782361",
+    "REVIEW-SNAPSHOT-454848"
+  ],
+  "evidenceIds": [
+    "KB-DOC-P1",
+    "KB-DOC-P2",
+    "KB-DOC-X2",
+    "KB-DOC-T1",
+    "KB-DOC-T3",
+    "KB-DOC-X1",
+    "KB-DOC-C1",
+    "KB-DOC-C2",
+    "KB-DOC-T2",
+    "KB-DOC-G1",
+    "MOCK-PRICE-001",
+    "MOCK-PRICE-002",
+    "MOCK-PRICE-003",
+    "MOCK-PRICE-004",
+    "MOCK-PRICE-005",
+    "MR-001",
+    "MR-002",
+    "MR-003",
+    "MR-004",
+    "MR-005",
+    "MR-006",
+    "MR-007",
+    "MR-008",
+    "MR-009",
+    "MR-010",
+    "MR-011",
+    "MR-012"
+  ],
+  "warnings": []
+}

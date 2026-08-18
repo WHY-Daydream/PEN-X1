@@ -1,0 +1,18 @@
+{
+  "scenario": "baseline",
+  "sessionId": "g4-baseline",
+  "trace": [
+    "penx1_start_analysis:OK",
+    "penx1_plan_tasks:OK",
+    "penx1_retrieve_knowledge:OK",
+    "penx1_fetch_market_mock:OK",
+    "penx1_fetch_reviews_mock:OK",
+    "penx1_analyze_market:OK",
+    "penx1_mine_review_pains:OK",
+    "penx1_identify_opportunities:OK",
+    "penx1_build_swot:OK",
+    "penx1_build_risk_register:OK",
+    "penx1_validate_evidence:OK",
+    "penx1_generate_report:OK"
+  ]
+}

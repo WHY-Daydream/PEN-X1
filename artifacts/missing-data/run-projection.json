@@ -1,0 +1,58 @@
+{
+  "runId": "RUN-001",
+  "sessionId": "g4-missing",
+  "phase": "REPORT_READY",
+  "completed": {
+    "runStarted": true,
+    "planReady": true,
+    "knowledgeReady": true,
+    "marketDataReady": true,
+    "reviewDataReady": true,
+    "marketAnalysisReady": true,
+    "reviewMiningReady": true,
+    "opportunitiesReady": true,
+    "swotReady": true,
+    "riskReady": true,
+    "validationPassed": true,
+    "reportReady": true
+  },
+  "artifactIds": [
+    "TASK-PLAN-RUN-001",
+    "MARKET-SNAPSHOT-743862",
+    "REVIEW-SNAPSHOT-313935",
+    "MARKET-ANALYSIS-RUN-001",
+    "REVIEW-MINING-RUN-001",
+    "OPPORTUNITY-RUN-001",
+    "SWOT-RUN-001",
+    "RISK-RUN-001",
+    "REPORT-RUN-001"
+  ],
+  "evidenceIds": [
+    "KB-DOC-P1",
+    "KB-DOC-P2",
+    "KB-DOC-X2",
+    "KB-DOC-T1",
+    "KB-DOC-T3",
+    "KB-DOC-X1",
+    "KB-DOC-C1",
+    "KB-DOC-C2",
+    "KB-DOC-T2",
+    "KB-DOC-G1",
+    "MOCK-PRICE-001",
+    "MOCK-PRICE-002",
+    "MOCK-PRICE-003",
+    "MOCK-PRICE-004",
+    "MR-001",
+    "MR-004",
+    "MC-001",
+    "RC-001",
+    "RC-002",
+    "RC-003"
+  ],
+  "warnings": [
+    "规格缺口：亮度",
+    "规格缺口：续航",
+    "规格缺口：温升",
+    "规格缺口：防水"
+  ]
+}

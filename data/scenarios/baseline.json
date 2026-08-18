@@ -1,0 +1,12 @@
+{
+  "description": "baseline 场景声明文件（方案 §28）。baseline 场景下 Provider 直接读取 dataFile（data/mock_prices.json 与 data/mock_reviews.json），本文件作为场景目录完整性声明与对照数据保留。",
+  "marketFile": "data/mock_prices.json",
+  "reviewFile": "data/mock_reviews.json",
+  "expectation": {
+    "terminalPhase": "REPORT_READY",
+    "engineeringGate": "CONDITIONAL_GO",
+    "massProductionGate": "NO_GO",
+    "listingGate": "NO_GO",
+    "criticalHallucination": 0
+  }
+}

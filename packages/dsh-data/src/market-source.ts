@@ -84,6 +84,7 @@ export function buildMarketSnapshot(raw: unknown, descriptor: SourceDescriptor):
       sourceLabel: `Amazon 竞品价格快照 ${MOCK_BANNER}`,
       sourceRef: `${descriptor.dataFile}#${record.competitor}`,
       content: {
+        domain: 'market',
         subject: `${record.competitor}.price`,
         value: record.price ?? null,
         capturedAt: record.capturedAt ?? capturedAt,

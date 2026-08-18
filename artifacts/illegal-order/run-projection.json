@@ -1,0 +1,32 @@
+{
+  "runId": "RUN-001",
+  "sessionId": "g4-illegal",
+  "phase": "KB_READY",
+  "completed": {
+    "runStarted": true,
+    "planReady": true,
+    "knowledgeReady": true,
+    "marketDataReady": true
+  },
+  "artifactIds": [
+    "TASK-PLAN-RUN-001",
+    "MARKET-SNAPSHOT-009941"
+  ],
+  "evidenceIds": [
+    "KB-DOC-P1",
+    "KB-DOC-P2",
+    "KB-DOC-X2",
+    "KB-DOC-T1",
+    "KB-DOC-T3",
+    "KB-DOC-X1",
+    "KB-DOC-C1",
+    "KB-DOC-C2",
+    "KB-DOC-T2",
+    "KB-DOC-G1",
+    "MOCK-PRICE-001",
+    "MOCK-PRICE-002",
+    "MOCK-PRICE-003",
+    "MOCK-PRICE-004"
+  ],
+  "warnings": []
+}

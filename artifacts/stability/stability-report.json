@@ -1,0 +1,94 @@
+{
+  "scenario": "deterministic-baseline",
+  "runs": 10,
+  "terminalSuccessRate": 1,
+  "correctGateRate": 1,
+  "replaySuccessRate": 1,
+  "avgDurationMs": 91,
+  "p95DurationMs": 309,
+  "workflowViolation": 0,
+  "criticalHallucination": 0,
+  "note": "无模型确定性回归（不依赖 API Key）；模型侧 20 次回归待配置 DEEPSEEK_API_KEY 后按 §12.1 分配执行。",
+  "results": [
+    {
+      "run": 1,
+      "runId": "RUN-001",
+      "phase": "REPORT_READY",
+      "success": true,
+      "replayOk": true,
+      "ms": 309
+    },
+    {
+      "run": 2,
+      "runId": "RUN-001",
+      "phase": "REPORT_READY",
+      "success": true,
+      "replayOk": true,
+      "ms": 68
+    },
+    {
+      "run": 3,
+      "runId": "RUN-001",
+      "phase": "REPORT_READY",
+      "success": true,
+      "replayOk": true,
+      "ms": 60
+    },
+    {
+      "run": 4,
+      "runId": "RUN-001",
+      "phase": "REPORT_READY",
+      "success": true,
+      "replayOk": true,
+      "ms": 54
+    },
+    {
+      "run": 5,
+      "runId": "RUN-001",
+      "phase": "REPORT_READY",
+      "success": true,
+      "replayOk": true,
+      "ms": 73
+    },
+    {
+      "run": 6,
+      "runId": "RUN-001",
+      "phase": "REPORT_READY",
+      "success": true,
+      "replayOk": true,
+      "ms": 60
+    },
+    {
+      "run": 7,
+      "runId": "RUN-001",
+      "phase": "REPORT_READY",
+      "success": true,
+      "replayOk": true,
+      "ms": 72
+    },
+    {
+      "run": 8,
+      "runId": "RUN-001",
+      "phase": "REPORT_READY",
+      "success": true,
+      "replayOk": true,
+      "ms": 84
+    },
+    {
+      "run": 9,
+      "runId": "RUN-001",
+      "phase": "REPORT_READY",
+      "success": true,
+      "replayOk": true,
+      "ms": 64
+    },
+    {
+      "run": 10,
+      "runId": "RUN-001",
+      "phase": "REPORT_READY",
+      "success": true,
+      "replayOk": true,
+      "ms": 63
+    }
+  ]
+}

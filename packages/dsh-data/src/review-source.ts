@@ -74,6 +74,7 @@ export function buildReviewSnapshot(raw: unknown, descriptor: SourceDescriptor):
       sourceLabel: `Amazon 英文评论快照 ${MOCK_BANNER}`,
       sourceRef: `${descriptor.dataFile}#${review.reviewId ?? index}`,
       content: {
+        domain: 'review',
         subject: `review.${review.reviewId ?? index}`,
         value: review.originalQuote,
         kind: 'review',

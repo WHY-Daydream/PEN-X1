@@ -1,0 +1,40 @@
+{
+  "manifestVersion": "1.0",
+  "capturedAt": "2026-08-19",
+  "environment": {
+    "node": "v22.22.0",
+    "pnpm": "11.7.0",
+    "os": "linux",
+    "gitHead": "2f24b72981e84f3f7414584289e93e8ad047b3ed",
+    "gitStatus": "clean"
+  },
+  "dsh": {
+    "repo": "deepseek-ai/deepseek-harness",
+    "commit": "47f943859b",
+    "version": "0.1.0-rc.5"
+  },
+  "dependencies": {
+    "@deepseek-ai/cordis": "4.0.1",
+    "@deepseek-ai/dsh-tools": "0.1.0-rc.5",
+    "@deepseek-ai/schemastery": "3.18.1"
+  },
+  "penx1Packages": {
+    "@penx1/contracts": "0.1.0",
+    "@penx1/dsh-core": "0.1.0",
+    "@penx1/dsh-data": "0.1.0",
+    "@penx1/dsh-analysis": "0.1.0",
+    "@penx1/dsh-bundle": "0.1.0",
+    "@penx1/dsh-profile": "0.1.0"
+  },
+  "verification": {
+    "build": "4 packages passed (tsc -b)",
+    "tests": 67,
+    "testBreakdown": {
+      "@penx1/contracts": 8,
+      "@penx1/dsh-data": 16,
+      "@penx1/dsh-core": 30,
+      "@penx1/dsh-analysis": 13
+    }
+  },
+  "freezePolicy": "DSH 升级单独开分支；演示环境不直接升级 DSH/Cordis。"
+}
