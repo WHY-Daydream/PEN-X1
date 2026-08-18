@@ -1,0 +1,60 @@
+{
+  "name": "@penx1/dsh-data",
+  "version": "0.1.0",
+  "description": "PEN-X1 数据插件包：knowledge / market-source-mock / market-tool / review-source-mock / review-tool",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./knowledge": {
+      "types": "./lib/knowledge.d.ts",
+      "default": "./lib/knowledge.js"
+    },
+    "./market-source-mock": {
+      "types": "./lib/market-source-mock.d.ts",
+      "default": "./lib/market-source-mock.js"
+    },
+    "./market-tool": {
+      "types": "./lib/market-tool.d.ts",
+      "default": "./lib/market-tool.js"
+    },
+    "./review-source-mock": {
+      "types": "./lib/review-source-mock.d.ts",
+      "default": "./lib/review-source-mock.js"
+    },
+    "./review-tool": {
+      "types": "./lib/review-tool.d.ts",
+      "default": "./lib/review-tool.js"
+    },
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -b tsconfig.build.json --pretty false",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.18.1",
+    "@penx1/contracts": "workspace:*"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4.0.1",
+    "@deepseek-ai/dsh-tools": ">=0.0.1-rc.1"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "link:../../../deepseek-harness/vendor/cordis",
+    "@deepseek-ai/dsh-tools": "link:../../../deepseek-harness/packages/core/tools",
+    "@types/node": "^22.0.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

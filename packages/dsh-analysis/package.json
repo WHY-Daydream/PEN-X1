@@ -1,0 +1,65 @@
+{
+  "name": "@penx1/dsh-analysis",
+  "version": "0.1.0",
+  "description": "PEN-X1 业务分析插件包：market-analysis / review-mining / opportunity / swot / risk / report",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./market-analysis": {
+      "types": "./lib/market-analysis.d.ts",
+      "default": "./lib/market-analysis.js"
+    },
+    "./review-mining": {
+      "types": "./lib/review-mining.d.ts",
+      "default": "./lib/review-mining.js"
+    },
+    "./opportunity": {
+      "types": "./lib/opportunity.d.ts",
+      "default": "./lib/opportunity.js"
+    },
+    "./swot": {
+      "types": "./lib/swot.d.ts",
+      "default": "./lib/swot.js"
+    },
+    "./risk": {
+      "types": "./lib/risk.d.ts",
+      "default": "./lib/risk.js"
+    },
+    "./report": {
+      "types": "./lib/report.d.ts",
+      "default": "./lib/report.js"
+    },
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -b tsconfig.build.json --pretty false",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.18.1",
+    "@penx1/contracts": "workspace:*"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4.0.1",
+    "@deepseek-ai/dsh-tools": ">=0.0.1-rc.1"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "link:../../../deepseek-harness/vendor/cordis",
+    "@deepseek-ai/dsh-tools": "link:../../../deepseek-harness/packages/core/tools",
+    "@deepseek-ai/dsh-llm": "link:../../../deepseek-harness/packages/llm/llm",
+    "@types/node": "^22.0.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

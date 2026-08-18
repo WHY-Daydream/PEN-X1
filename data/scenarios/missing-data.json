@@ -1,0 +1,7 @@
+{
+  "capturedAt": "2026-08-01T00:00:00Z",
+  "reviews": [
+    { "reviewId": "MR-001", "competitor": "BrandA", "rating": 2, "language": "en-US", "originalQuote": "The switch is too stiff to press with one hand." },
+    { "reviewId": "MR-004", "competitor": "BrandB", "rating": 1, "language": "en-US", "originalQuote": "Very dim on low mode, barely visible in the dark." }
+  ]
+}

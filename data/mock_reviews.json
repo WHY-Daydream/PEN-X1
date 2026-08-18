@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-08-01T00:00:00Z",
+  "reviews": [
+    { "reviewId": "MR-001", "competitor": "BrandA", "rating": 2, "language": "en-US", "originalQuote": "The switch is too stiff to press with one hand." },
+    { "reviewId": "MR-002", "competitor": "BrandA", "rating": 3, "language": "en-US", "originalQuote": "It turns on accidentally in my pocket all the time." },
+    { "reviewId": "MR-003", "competitor": "BrandA", "rating": 4, "language": "en-US", "originalQuote": "Runtime is great, lasts a whole week on AA batteries." },
+    { "reviewId": "MR-004", "competitor": "BrandB", "rating": 1, "language": "en-US", "originalQuote": "Very dim on low mode, barely visible in the dark." },
+    { "reviewId": "MR-005", "competitor": "BrandB", "rating": 3, "language": "en-US", "originalQuote": "The mode switching is confusing, it cycles through too many settings." },
+    { "reviewId": "MR-006", "competitor": "BrandB", "rating": 2, "language": "en-US", "originalQuote": "Gets hot quickly on the highest setting." },
+    { "reviewId": "MR-007", "competitor": "BrandC", "rating": 5, "language": "en-US", "originalQuote": "Solid build, comfortable length for daily carry." },
+    { "reviewId": "MR-008", "competitor": "BrandC", "rating": 2, "language": "en-US", "originalQuote": "Battery compatibility is misleading, the listing says all sizes work." },
+    { "reviewId": "MR-009", "competitor": "BrandC", "rating": 3, "language": "en-US", "originalQuote": "The switch feels loose after a few months of use." },
+    { "reviewId": "MR-010", "competitor": "BrandD", "rating": 4, "language": "en-US", "originalQuote": "It remembers the last mode I used, really convenient." },
+    { "reviewId": "MR-011", "competitor": "BrandD", "rating": 2, "language": "en-US", "originalQuote": "A bit bulky and long for an EDC light." },
+    { "reviewId": "MR-012", "competitor": "BrandD", "rating": 4, "language": "en-US", "originalQuote": "Battery life drains fast with 14500 cells." }
+  ]
+}

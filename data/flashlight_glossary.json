@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "terms": [
+    { "term": "EDC", "translation": "每日随身携带（Everyday Carry）", "category": "generic" },
+    { "term": "lumens", "translation": "流明（亮度单位）", "category": "brightness" },
+    { "term": "runtime", "translation": "续航时间", "category": "runtime" },
+    { "term": "boost circuit", "translation": "升压电路", "category": "electronics" },
+    { "term": "tail switch", "translation": "尾部开关", "category": "switch" },
+    { "term": "mode memory", "translation": "档位记忆", "category": "switch" },
+    { "term": "low voltage warning", "translation": "低压提示", "category": "electronics" },
+    { "term": "pocket clip", "translation": "背夹", "category": "body" },
+    { "term": "AA/AAA/14500/18650", "translation": "常见电池规格（AAA/AA/14500/18650）", "category": "battery" }
+  ]
+}

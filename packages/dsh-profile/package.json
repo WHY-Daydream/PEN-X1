@@ -1,0 +1,16 @@
+{
+  "name": "@penx1/dsh-profile",
+  "version": "0.1.0",
+  "description": "PEN-X1 Profile 组合：Web 演示与 Headless 测试两组 Profile",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "typecheck": "tsc --noEmit --pretty false"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^6.0.3"
+  }
+}

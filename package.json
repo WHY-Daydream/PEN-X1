@@ -1,0 +1,25 @@
+{
+  "name": "penx1-power-availability",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PEN-X1 产品分析师 AI Agent — DSH 全插件架构（@penx1/* 插件家族）",
+  "type": "module",
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "build": "pnpm -r build"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "oxlint": "^0.16.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "capturedAt": "2026-08-01T00:00:00Z",
+  "records": [
+    { "competitor": "BrandA", "price": 29.99, "currency": "USD", "capturedAt": "2026-07-15T00:00:00Z", "inStock": true, "promotion": "常价" },
+    { "competitor": "BrandA", "price": 27.99, "currency": "USD", "capturedAt": "2026-08-01T00:00:00Z", "inStock": true, "promotion": "促销价" },
+    { "competitor": "BrandB", "price": 34.95, "currency": "USD", "capturedAt": "2026-07-20T00:00:00Z", "inStock": true, "promotion": "常价" },
+    { "competitor": "BrandC", "price": 49.99, "currency": "USD", "capturedAt": "2026-07-25T00:00:00Z", "inStock": false, "promotion": "缺货" }
+  ]
+}

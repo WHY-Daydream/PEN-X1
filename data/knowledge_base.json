@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "documents": [
+    { "id": "DOC-P1", "type": "product", "title": "PEN-X1 产品定义与规格", "tags": ["PEN-X1", "规格", "产品"], "source": "attachment", "sourcePriority": 3, "content": "PEN-X1 为 EDC 手电：支持 AAA/AA/14500/18650/CR123A 五种电池，多长度结构 44.5–100mm，目标亮度 500lm。亮度、续航、温升、防水、尺寸、重量与五种电池实测矩阵尚未完成。" },
+    { "id": "DOC-P2", "type": "product", "title": "PEN-X1 目标定价", "tags": ["PEN-X1", "价格", "产品"], "source": "attachment", "sourcePriority": 2, "content": "PEN-X1 目标价 $34.95，定位中间价格带；不提前声明综合性价比领先。" },
+    { "id": "DOC-C1", "type": "competitor", "title": "北美 Amazon 竞品价格快照", "tags": ["竞品", "Amazon", "价格", "competitor"], "source": "generic", "sourcePriority": 0, "content": "北美 Amazon 市场竞品价格带约 $29.99–$49.99：BrandA $29.99、BrandB $34.95、BrandC $49.99、BrandD $39.99；价格时点差异与促销口径需分别登记。" },
+    { "id": "DOC-C2", "type": "competitor", "title": "竞品差异化观察", "tags": ["竞品", "competitor"], "source": "generic", "content": "竞品普遍宣传多电池兼容与长续航；用户对开关手感、误触和档位逻辑抱怨集中。" },
+    { "id": "DOC-T1", "type": "technical", "title": "AAA 低压升压拓扑约束", "tags": ["电池", "升压", "技术"], "source": "internal", "sourcePriority": 2, "content": "AAA 单节 1.5V/0.9V 输入下升压效率是 R&D 关键风险；0.9V 输入恒流输出效率目标 ≥85%，低电压档位亮度不能明显衰减。" },
+    { "id": "DOC-T2", "type": "technical", "title": "多电池兼容与误识别", "tags": ["电池", "开关", "技术"], "source": "internal", "sourcePriority": 1, "content": "五种电池电压/极性差异需要识别电路；双电池混用与反装保护、电池类型误识别为 R&D 风险；14500 高档位温升需实测 ≤20K。" },
+    { "id": "DOC-T3", "type": "technical", "title": "开关手感与档位逻辑", "tags": ["开关", "技术", "switch"], "source": "internal", "sourcePriority": 1, "content": "开关手感、误触与档位逻辑是用户评价关键项；需要弹簧疲劳与镀层磨损测试支撑。" },
+    { "id": "DOC-X1", "type": "constraint", "title": "海外运输与认证约束", "tags": ["约束", "运输", "认证", "constraint"], "source": "generic", "sourcePriority": 1, "content": "含锂电池 SKU 需要 UN38.3 运输资料与危险品申报；北美上市需符合 UL/CE 相关认证要求。" },
+    { "id": "DOC-X2", "type": "constraint", "title": "验证与测试门槛", "tags": ["约束", "验证", "测试"], "source": "internal", "sourcePriority": 2, "content": "量产前必须完成：尺寸链公差分析、接触电阻 ≤50mΩ、EOL 测试通过率 ≥99.5%、关键规格 100% 披露；缺少实测数据不得写入 Listing。" },
+    { "id": "DOC-G1", "type": "general", "title": "EDC 手电用户趋势", "tags": ["EDC", "手电"], "source": "generic", "content": "EDC 手电用户关注电池可获得性、便携尺寸与可靠开关；北美 Amazon 是主要销售渠道。" }
+  ]
+}

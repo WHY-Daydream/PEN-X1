@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "pains": [
+    { "id": "switch_force", "label": "开关按压力度", "priority": "high" },
+    { "id": "accidental_activation", "label": "误触点亮", "priority": "high" },
+    { "id": "mode_switching", "label": "档位切换", "priority": "high" },
+    { "id": "mode_memory", "label": "档位记忆", "priority": "medium" },
+    { "id": "low_voltage_brightness", "label": "低压档亮度", "priority": "high" },
+    { "id": "runtime", "label": "续航", "priority": "high" },
+    { "id": "heat", "label": "温升发热", "priority": "high" },
+    { "id": "size_length", "label": "尺寸长度", "priority": "medium" },
+    { "id": "battery_compatibility_wording", "label": "电池兼容性表述", "priority": "high" },
+    { "id": "switch_wear", "label": "开关磨损", "priority": "medium" },
+    { "id": "other_reviewed", "label": "其他（需人工复核）", "priority": "low" }
+  ]
+}

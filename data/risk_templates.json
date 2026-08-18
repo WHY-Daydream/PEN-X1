@@ -1,0 +1,19 @@
+{
+  "version": "1.0",
+  "templates": [
+    { "riskId": "R-01", "phase": "R&D", "rootCause": "44.5–100mm 多长度结构可行性", "negativeImpact": "多规格机身难以共用模具，成本与周期失控", "mitigation": "结构仿真 + 手板验证多长度共享方案", "validationGate": "三款长度手板通过跌落与插拔测试", "owner": "结构工程师" },
+    { "riskId": "R-02", "phase": "R&D", "rootCause": "AAA 低压升压效率", "negativeImpact": "低电压档位亮度不达标", "mitigation": "选用高效率升压拓扑并做低压实测", "validationGate": "0.9V 输入恒流输出效率 ≥ 85%", "owner": "电子工程师" },
+    { "riskId": "R-03", "phase": "R&D", "rootCause": "电池类型误识别", "negativeImpact": "电压/极性识别错误导致保护失效", "mitigation": "识别电路 + 校准流程", "validationGate": "五种电池识别准确率 100%", "owner": "电子工程师" },
+    { "riskId": "R-04", "phase": "R&D", "rootCause": "14500 高档温升", "negativeImpact": "高温降档或外壳烫手", "mitigation": "热设计仿真与实测", "validationGate": "高档 10 分钟温升 ≤ 20K", "owner": "电子工程师" },
+    { "riskId": "R-05", "phase": "R&D", "rootCause": "双电池混用与反装", "negativeImpact": "混用导致过放或损坏", "mitigation": "混用/反装保护电路 + 测试用例", "validationGate": "混用与反装保护测试全部通过", "owner": "电子工程师" },
+    { "riskId": "R-06", "phase": "R&D", "rootCause": "开关手感、误触与档位逻辑", "negativeImpact": "用户抱怨集中，退货率上升", "mitigation": "开关力值规格 + 防误触设计 + 档位逻辑评审", "validationGate": "开关力值 3–5N，误触率 < 1%", "owner": "结构工程师" },
+    { "riskId": "R-07", "phase": "MASS_PRODUCTION", "rootCause": "尺寸链与接触电阻", "negativeImpact": "装配不良与接触不良导致点不亮", "mitigation": "公差分析 + 来料管控", "validationGate": "尺寸链分析完成且接触电阻 ≤ 50mΩ", "owner": "制造工程师" },
+    { "riskId": "R-08", "phase": "MASS_PRODUCTION", "rootCause": "弹簧疲劳、镀层磨损和腐蚀", "negativeImpact": "开关失效与接触腐蚀投诉", "mitigation": "疲劳与盐雾测试", "validationGate": "弹簧 10 万次疲劳、盐雾 48h 通过", "owner": "制造工程师" },
+    { "riskId": "R-09", "phase": "MASS_PRODUCTION", "rootCause": "BOM 与装配工时", "negativeImpact": "单件成本与产能不达标", "mitigation": "DFM 评审与产线优化", "validationGate": "装配工时 < 3 分钟且 BOM 冻结", "owner": "制造工程师" },
+    { "riskId": "R-10", "phase": "MASS_PRODUCTION", "rootCause": "识别校准和 EOL 测试", "negativeImpact": "不良品流出到市场", "mitigation": "EOL 自动测试工位", "validationGate": "EOL 测试通过率 ≥ 99.5%", "owner": "测试工程师" },
+    { "riskId": "R-11", "phase": "OVERSEAS_LAUNCH", "rootCause": "含锂电池 SKU 运输资料", "negativeImpact": "物流渠道拒绝承运", "mitigation": "UN38.3 报告与危险品申报", "validationGate": "UN38.3 报告齐备且承运商确认", "owner": "供应链" },
+    { "riskId": "R-12", "phase": "OVERSEAS_LAUNCH", "rootCause": "兼容性表达导致性能误解", "negativeImpact": "用户误解电池性能，差评与退货", "mitigation": "Listing 文案审计 + 实测数据支撑", "validationGate": "Listing 文案审计通过且无夸大表述", "owner": "产品经理" },
+    { "riskId": "R-13", "phase": "OVERSEAS_LAUNCH", "rootCause": "价格促销和利润波动", "negativeImpact": "促销亏损或价格战", "mitigation": "定价与促销规则评审", "validationGate": "促销毛利 ≥ 30%", "owner": "产品经理" },
+    { "riskId": "R-14", "phase": "OVERSEAS_LAUNCH", "rootCause": "关键规格缺失导致 Listing 不可审计", "negativeImpact": "Listing 被下架或投诉", "mitigation": "关键规格 100% 披露清单", "validationGate": "亮度/续航/温升/防水等关键规格 100% 披露", "owner": "产品经理" }
+  ]
+}

@@ -1,0 +1,118 @@
+# PEN-X1 插件 Bundle：按方案 §5.2 挂载顺序统一挂载 17 个插件。
+# Service Provider 先于 Consumer；Workflow Guard 在工具注册完成后加载；Trace 最后加载。
+
+- name: '@penx1/dsh-core/run-state'            # 01 run-state
+  config:
+    maxRunsPerSession: 5
+    maxArtifactsPerRun: 500
+    replayOnLoad: true
+    allowConcurrentRuns: false
+
+- name: '@penx1/dsh-core/evidence-guard'        # 02 evidence-guard
+  config:
+    supportedThreshold: 0.80
+    conditionalThreshold: 0.60
+    requireEvidenceForEveryClaim: true
+    requireAllRiskFields: true
+    mockBaseWeight: 0.70
+    inferenceBaseWeight: 0.40
+    blockListingOnCriticalMissing: true
+    requireMockLabels: true
+
+- name: '@penx1/dsh-core/policy'                # 03 policy
+  config:
+    promptFile: 'prompts/penx1-system.md'
+    language: 'zh-CN'
+    includeEnglishReviewRules: true
+    includeMockBanner: true
+
+- name: '@penx1/dsh-core/task-planner'          # 04 task-planner
+  config:
+    planVersion: 'penx1-dag-v1'
+    allowModelToAddOptionalTasks: false
+
+- name: '@penx1/dsh-data/knowledge'             # 05 knowledge
+  config:
+    knowledgeFile: 'data/knowledge_base.json'
+    dataRoot: 'data'
+    topKProduct: 5
+    topKCompetitor: 8
+    topKTechnical: 5
+    topKConstraint: 5
+    retrievalMode: 'lexical'
+    watchFiles: false
+
+- name: '@penx1/dsh-data/market-source-mock'    # 06 market-mock-provider
+  config:
+    dataFile: 'data/mock_prices.json'
+    dataRoot: 'data'
+    scenario: 'baseline'
+    latencyMs: 150
+    failureRate: 0
+
+- name: '@penx1/dsh-data/market-tool'           # 07 market-tool
+  config: {}
+
+- name: '@penx1/dsh-data/review-source-mock'    # 08 review-mock-provider
+  config:
+    dataFile: 'data/mock_reviews.json'
+    dataRoot: 'data'
+    scenario: 'baseline'
+    defaultLanguage: 'en-US'
+    latencyMs: 150
+    failureRate: 0
+
+- name: '@penx1/dsh-data/review-tool'           # 09 review-tool
+  config: {}
+
+- name: '@penx1/dsh-analysis/market-analysis'   # 10 market-analysis
+  config:
+    maxClaims: 8
+    allowUnverifiedNumericClaims: false
+
+- name: '@penx1/dsh-analysis/review-mining'     # 11 review-mining
+  config:
+    minimumClusterSize: 1
+    lowConfidenceCutoff: 0.60
+    maxClusters: 10
+
+- name: '@penx1/dsh-analysis/opportunity'       # 12 opportunity
+  config:
+    maxOpportunities: 6
+    requireEngineeringDependency: true
+    requireCrossDomainEvidence: true
+
+- name: '@penx1/dsh-analysis/swot'              # 13 swot
+  config:
+    minItemsPerQuadrant: 2
+    maxItemsPerQuadrant: 4
+    rejectGenericStatements: true
+
+- name: '@penx1/dsh-analysis/risk'              # 14 risk
+  config:
+    minimumRiskCount: 10
+    requiredPhases: ['R&D', 'MASS_PRODUCTION', 'OVERSEAS_LAUNCH']
+
+- name: '@penx1/dsh-analysis/report'            # 15 report
+  config:
+    outputDir: 'output/dsh'
+    fileNamePattern: 'PEN-X1_DSH_Report_{runId}.md'
+    includeEvidenceLedger: true
+    includeRunTrace: true
+    overwrite: false
+
+- name: '@penx1/dsh-core/workflow-guard'        # 16 workflow-guard
+  config:
+    maxSteps: 18
+    maxRetriesPerTool: 2
+    allowParallelDataTools: true
+    allowParallelFinalAnalyses: true
+    blockUnknownTools: true
+    continueOnNonCriticalSourceMissing: true
+
+- name: '@penx1/dsh-core/trace'                 # 17 trace
+  config:
+    verbosity: 'concise'
+    emitProgressCards: true
+    includePayloads: false
+    includeTimings: true

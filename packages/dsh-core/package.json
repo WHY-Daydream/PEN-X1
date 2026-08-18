@@ -1,0 +1,65 @@
+{
+  "name": "@penx1/dsh-core",
+  "version": "0.1.0",
+  "description": "PEN-X1 核心插件包：run-state / evidence-guard / policy / task-planner / workflow-guard / trace",
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./run-state": {
+      "types": "./lib/run-state.d.ts",
+      "default": "./lib/run-state.js"
+    },
+    "./evidence-guard": {
+      "types": "./lib/evidence-guard.d.ts",
+      "default": "./lib/evidence-guard.js"
+    },
+    "./policy": {
+      "types": "./lib/policy.d.ts",
+      "default": "./lib/policy.js"
+    },
+    "./task-planner": {
+      "types": "./lib/task-planner.d.ts",
+      "default": "./lib/task-planner.js"
+    },
+    "./workflow-guard": {
+      "types": "./lib/workflow-guard.d.ts",
+      "default": "./lib/workflow-guard.js"
+    },
+    "./trace": {
+      "types": "./lib/trace.d.ts",
+      "default": "./lib/trace.js"
+    },
+    "./src/*": "./src/*",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc -b tsconfig.build.json",
+    "typecheck": "tsc -b tsconfig.build.json --pretty false",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "^3.18.1",
+    "@penx1/contracts": "workspace:*"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4.0.1",
+    "@deepseek-ai/dsh-tools": ">=0.0.1-rc.1"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "link:../../../deepseek-harness/vendor/cordis",
+    "@deepseek-ai/dsh-tools": "link:../../../deepseek-harness/packages/core/tools",
+    "@deepseek-ai/dsh-system-prompt": "link:../../../deepseek-harness/packages/core/system-prompt",
+    "@types/node": "^22.0.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

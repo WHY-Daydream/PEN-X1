@@ -1,0 +1,9 @@
+{
+  "capturedAt": "2026-08-01T00:00:00Z",
+  "records": [
+    { "competitor": "BrandA", "price": 29.99, "currency": "USD", "capturedAt": "2026-07-15T00:00:00Z", "inStock": true, "promotion": "常价", "spec": { "battery": "AAA/AA", "length": "95mm" } },
+    { "competitor": "BrandB", "price": 34.95, "currency": "USD", "capturedAt": "2026-07-20T00:00:00Z", "inStock": true, "promotion": "常价", "spec": { "battery": "AA/14500", "length": "100mm" } },
+    { "competitor": "BrandC", "price": 49.99, "currency": "USD", "capturedAt": "2026-07-25T00:00:00Z", "inStock": false, "promotion": "缺货", "spec": { "battery": "18650", "length": "120mm" } },
+    { "competitor": "BrandD", "price": 39.99, "currency": "USD", "capturedAt": "2026-08-01T00:00:00Z", "inStock": true, "promotion": "常价", "spec": { "battery": "AAA/AA/14500", "length": "90mm" } }
+  ]
+}
