@@ -52,6 +52,27 @@ describe('Review Mining（方案 §17）', () => {
     expect(extraction.lowConfidenceReviewIds).toContain('MR-005')
     expect(extraction.claims.every((c) => c.evidenceRefs.length > 0)).toBe(true)
   })
+
+  it('输入契约：originalQuote 缺失 / null / 空串不崩溃，计入低置信度', () => {
+    const extraction = extractPains([
+      { reviewId: 'MR-001', competitor: 'A', rating: 2, originalQuote: 'The switch is too stiff to press with one hand.' },
+      { reviewId: 'MR-MISSING', competitor: 'B', rating: 3 } as unknown as { reviewId: string; competitor: string; rating: number; originalQuote: string },
+      { reviewId: 'MR-NULL', competitor: 'B', rating: 3, originalQuote: null as unknown as string },
+      { reviewId: 'MR-EMPTY', competitor: 'C', rating: 3, originalQuote: '   ' },
+    ], { minimumClusterSize: 1, lowConfidenceCutoff: 0.6, maxClusters: 10 })
+    expect(extraction.clusters.some((c) => c.pain === 'switch_force')).toBe(true)
+    expect(extraction.lowConfidenceReviewIds).toEqual(expect.arrayContaining(['MR-MISSING', 'MR-NULL', 'MR-EMPTY']))
+  })
+
+  it('输入契约：意外结构（null / 非对象）跳过不崩溃', () => {
+    const extraction = extractPains([
+      { reviewId: 'MR-001', competitor: 'A', rating: 2, originalQuote: 'Battery life drains too fast.' },
+      null as unknown as { reviewId: string; competitor: string; rating: number; originalQuote: string },
+      'not-an-object' as unknown as { reviewId: string; competitor: string; rating: number; originalQuote: string },
+    ], { minimumClusterSize: 1, lowConfidenceCutoff: 0.6, maxClusters: 10 })
+    expect(extraction.clusters.some((c) => c.pain === 'runtime')).toBe(true)
+    expect(extraction.lowConfidenceReviewIds).not.toContain('MR-001')
+  })
 })
 
 describe('Opportunity（方案 §18）', () => {

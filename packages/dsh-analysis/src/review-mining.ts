@@ -64,21 +64,46 @@ export const PAIN_GLOSSARY: ReadonlyArray<{ pain: string; keywords: string[] }> 
   { pain: 'switch_wear', keywords: ['worn', 'wearing out', 'loose switch', 'fails'] },
 ]
 
+/**
+ * 规范化单条评论的工具输入边界（LLM Tool Input → Normalization → Business Logic）。
+ * 真实模型 Tool Calling 不保证每个字段都存在：originalQuote 缺失 / null / 空串
+ * 时归一化为空串并计入低置信度，而非抛出运行时异常——运行时异常会被 Agent
+ * 反复重试并耗尽 Step Budget（本次 G5 失败根因之一）。
+ * 非对象输入同样跳过（防意外结构），不崩溃。
+ */
+export function normalizeReviewQuote(raw: unknown): string {
+  return typeof raw === 'string' ? raw.trim() : ''
+}
+
 export function extractPains(reviews: ReviewInput[], options: { minimumClusterSize: number; lowConfidenceCutoff: number; maxClusters: number }): PainExtraction {
   const clusters = new Map<string, PainCluster>()
   const lowConfidenceReviewIds: string[] = []
   for (const review of reviews) {
-    const quote = review.originalQuote.toLowerCase()
-    const matched = PAIN_GLOSSARY.filter(({ keywords }) => keywords.some((k) => quote.includes(k)))
+    if (review === null || typeof review !== 'object') continue
+    const quote = normalizeReviewQuote((review as { originalQuote?: unknown }).originalQuote)
+    if (quote.length === 0) {
+      if (typeof review.reviewId === 'string' && review.reviewId.length > 0) {
+        lowConfidenceReviewIds.push(review.reviewId)
+      }
+      continue
+    }
+    const lower = quote.toLowerCase()
+    const matched = PAIN_GLOSSARY.filter(({ keywords }) => keywords.some((k) => lower.includes(k)))
     if (matched.length === 0) {
-      lowConfidenceReviewIds.push(review.reviewId)
+      if (typeof review.reviewId === 'string' && review.reviewId.length > 0) {
+        lowConfidenceReviewIds.push(review.reviewId)
+      }
       continue
     }
     const rating = review.rating ?? 3
     for (const { pain } of matched) {
       const cluster = clusters.get(pain) ?? { pain, reviewIds: [], competitors: [], frequency: 0, severity: 0, sampleQuotes: [] }
-      if (!cluster.reviewIds.includes(review.reviewId)) cluster.reviewIds.push(review.reviewId)
-      if (!cluster.competitors.includes(review.competitor)) cluster.competitors.push(review.competitor)
+      if (typeof review.reviewId === 'string' && review.reviewId.length > 0 && !cluster.reviewIds.includes(review.reviewId)) {
+        cluster.reviewIds.push(review.reviewId)
+      }
+      if (typeof review.competitor === 'string' && review.competitor.length > 0 && !cluster.competitors.includes(review.competitor)) {
+        cluster.competitors.push(review.competitor)
+      }
       if (cluster.sampleQuotes.length < 3) cluster.sampleQuotes.push(review.originalQuote)
       clusters.set(pain, cluster)
     }
