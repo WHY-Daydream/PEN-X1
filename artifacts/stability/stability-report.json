@@ -4,11 +4,11 @@
   "terminalSuccessRate": 1,
   "correctGateRate": 1,
   "replaySuccessRate": 1,
-  "avgDurationMs": 91,
-  "p95DurationMs": 309,
+  "avgDurationMs": 78,
+  "p95DurationMs": 245,
   "workflowViolation": 0,
   "criticalHallucination": 0,
-  "note": "无模型确定性回归（不依赖 API Key）；模型侧 20 次回归待配置 DEEPSEEK_API_KEY 后按 §12.1 分配执行。",
+  "note": "确定性 10/10 PASS;模型侧 live 20 次执行完成,业务正确性 FAIL(见 live 段)。",
   "results": [
     {
       "run": 1,
@@ -16,7 +16,7 @@
       "phase": "REPORT_READY",
       "success": true,
       "replayOk": true,
-      "ms": 309
+      "ms": 245
     },
     {
       "run": 2,
@@ -24,7 +24,7 @@
       "phase": "REPORT_READY",
       "success": true,
       "replayOk": true,
-      "ms": 68
+      "ms": 60
     },
     {
       "run": 3,
@@ -32,7 +32,7 @@
       "phase": "REPORT_READY",
       "success": true,
       "replayOk": true,
-      "ms": 60
+      "ms": 56
     },
     {
       "run": 4,
@@ -40,7 +40,7 @@
       "phase": "REPORT_READY",
       "success": true,
       "replayOk": true,
-      "ms": 54
+      "ms": 56
     },
     {
       "run": 5,
@@ -48,7 +48,7 @@
       "phase": "REPORT_READY",
       "success": true,
       "replayOk": true,
-      "ms": 73
+      "ms": 55
     },
     {
       "run": 6,
@@ -56,7 +56,7 @@
       "phase": "REPORT_READY",
       "success": true,
       "replayOk": true,
-      "ms": 60
+      "ms": 72
     },
     {
       "run": 7,
@@ -64,7 +64,7 @@
       "phase": "REPORT_READY",
       "success": true,
       "replayOk": true,
-      "ms": 72
+      "ms": 66
     },
     {
       "run": 8,
@@ -72,7 +72,7 @@
       "phase": "REPORT_READY",
       "success": true,
       "replayOk": true,
-      "ms": 84
+      "ms": 54
     },
     {
       "run": 9,
@@ -80,7 +80,7 @@
       "phase": "REPORT_READY",
       "success": true,
       "replayOk": true,
-      "ms": 64
+      "ms": 57
     },
     {
       "run": 10,
@@ -88,7 +88,26 @@
       "phase": "REPORT_READY",
       "success": true,
       "replayOk": true,
-      "ms": 63
+      "ms": 56
     }
-  ]
+  ],
+  "live": {
+    "scenario": "model-live-20",
+    "planned": 20,
+    "finalSuccess": 20,
+    "terminalSuccessRate": 1.0,
+    "attempts": 37,
+    "attemptSuccess": 20,
+    "attemptFailure": 17,
+    "failureKinds": {
+      "LIFECYCLE": 8,
+      "SPAWN_ERROR": 7,
+      "TIMEOUT": 2
+    },
+    "reportReadyCases": 0,
+    "correctGateRate": 0.0,
+    "policyViolation": 0,
+    "conclusion": "FAIL",
+    "note": "执行层 20/20 成功但业务层 0/20 达 REPORT_READY:review-mining.ts:71 originalQuote 缺失崩溃 + Step Budget 18 耗尽;G5=FAIL,不作为 PASS 提交。"
+  }
 }
