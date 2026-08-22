@@ -10,6 +10,7 @@ import { defineTool } from '@deepseek-ai/dsh-tools'
 import type { Opportunity } from '@penx1/contracts'
 import { Penx1Error, isoNow } from '@penx1/contracts'
 import { completeStep } from './helpers.js'
+import { assertObject, optionalString, requireString, requireStringArray } from './input-guard.js'
 
 export const name = 'penx1-opportunity'
 
@@ -76,7 +77,24 @@ export function apply(ctx: Context, config: Config): void {
     description: '联合市场分析与评论痛点生成产品机会点（需工程依赖与跨域证据）',
     parameters: {
       runId: { type: 'string', required: true, description: 'PEN-X1 Run ID' },
-      opportunities: { type: 'array', required: true, description: '机会点列表', items: { type: 'object', additionalProperties: true } },
+      opportunities: {
+        type: 'array',
+        required: true,
+        description: '机会点列表（canonical 字段：opportunityId / title / evidenceRefs）',
+        items: {
+          type: 'object',
+          additionalProperties: true,
+          properties: {
+            opportunityId: { type: 'string',  },
+            title: { type: 'string',  },
+            userProblem: { type: 'string' },
+            productResponse: { type: 'string' },
+            commercialValue: { type: 'string' },
+            engineeringDependency: { type: 'string' },
+            evidenceRefs: { type: 'array', items: { type: 'string',  } },
+          },
+        },
+      },
     },
     output: {
       schema: {
@@ -95,7 +113,25 @@ export function apply(ctx: Context, config: Config): void {
     },
     async execute(args) {
       ctx.penx1Run.assert(args.runId, ['marketAnalysisReady', 'reviewMiningReady'])
-      const input = (args.opportunities ?? []) as unknown as OpportunityInput[]
+      const rawInput = Array.isArray(args.opportunities) ? (args.opportunities as unknown[]) : []
+      // 输入契约校验：缺 opportunityId/title/evidenceRefs 走结构化 INVALID_TOOL_INPUT
+      // （模型可据此修复参数）,而非后续出现 "undefined 证据未跨域" 的模糊语义错误。
+      const input: OpportunityInput[] = rawInput.map((raw, index) => {
+        assertObject(raw, `opportunities[${index}]`)
+        const obj = raw as Record<string, unknown>
+        return {
+          opportunityId: requireString(obj, `opportunities[${index}].opportunityId`, ['opportunityId'], 'opportunityId'),
+          title: requireString(obj, `opportunities[${index}].title`, ['title'], 'title'),
+          // userProblem/productResponse/commercialValue/engineeringDependency 为可选字段：
+          // 业务层 validateOpportunities 在 requireEngineeringDependency=true 时校验 engineeringDependency，
+          // 此处仅做结构校验（类型/空串），不做必填约束，避免误杀合法省略。
+          userProblem: optionalString(obj, `opportunities[${index}].userProblem`, ['userProblem', 'description']) ?? '',
+          productResponse: optionalString(obj, `opportunities[${index}].productResponse`, ['productResponse']) ?? '',
+          commercialValue: optionalString(obj, `opportunities[${index}].commercialValue`, ['commercialValue']) ?? '',
+          engineeringDependency: optionalString(obj, `opportunities[${index}].engineeringDependency`, ['engineeringDependency']) ?? '',
+          evidenceRefs: requireStringArray(obj, `opportunities[${index}].evidenceRefs`, ['evidenceRefs'], 'evidenceRefs'),
+        }
+      })
       const domains = new Map<string, 'market' | 'review'>()
       for (const opportunity of input) {
         for (const ref of opportunity.evidenceRefs) {

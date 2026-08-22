@@ -11,6 +11,7 @@ import { defineTool } from '@deepseek-ai/dsh-tools'
 import type { Claim, JsonValue } from '@penx1/contracts'
 import { isoNow } from '@penx1/contracts'
 import { completeStep } from './helpers.js'
+import { assertObject, optionalNumber, optionalString, requireString } from './input-guard.js'
 
 export const name = 'penx1-review-mining'
 
@@ -133,7 +134,22 @@ export function apply(ctx: Context, config: Config): void {
     description: '从英文评论原句中抽取痛点并聚类（固定字典，reviewId 100% 回链）',
     parameters: {
       runId: { type: 'string', required: true, description: 'PEN-X1 Run ID' },
-      reviews: { type: 'array', required: true, description: '评论列表（含原句）', items: { type: 'object', additionalProperties: true } },
+      reviews: {
+        type: 'array',
+        required: true,
+        description: '评论列表（canonical 字段：reviewId / originalQuote）',
+        items: {
+          type: 'object',
+          additionalProperties: true,
+          properties: {
+            reviewId: { type: 'string',  },
+            competitor: { type: 'string',  },
+            rating: { type: 'number' },
+            originalQuote: { type: 'string',  },
+            language: { type: 'string' },
+          },
+        },
+      },
     },
     output: {
       schema: {
@@ -155,7 +171,21 @@ export function apply(ctx: Context, config: Config): void {
     },
     async execute(args) {
       ctx.penx1Run.assert(args.runId, ['knowledgeReady', 'reviewDataReady'])
-      const extraction = extractPains((args.reviews ?? []) as unknown as ReviewInput[], {
+      const rawReviews = Array.isArray(args.reviews) ? (args.reviews as unknown[]) : []
+      // 兼容性 normalization：canonical reviewId/originalQuote 优先,兼容 id/text 别名
+      // （backward-compatible alias,不作为正式协议;缺字段走结构化 INVALID_TOOL_INPUT）。
+      const reviews: ReviewInput[] = rawReviews.map((raw, index) => {
+        assertObject(raw, `reviews[${index}]`)
+        const obj = raw as Record<string, unknown>
+        return {
+          reviewId: requireString(obj, `reviews[${index}].reviewId`, ['reviewId', 'id'], 'reviewId'),
+          competitor: optionalString(obj, `reviews[${index}].competitor`, ['competitor']) ?? '',
+          rating: optionalNumber(obj, `reviews[${index}].rating`, ['rating']) ?? 3,
+          originalQuote: requireString(obj, `reviews[${index}].originalQuote`, ['originalQuote', 'text'], 'originalQuote'),
+          language: optionalString(obj, `reviews[${index}].language`, ['language']),
+        }
+      })
+      const extraction = extractPains(reviews, {
         minimumClusterSize: config.minimumClusterSize,
         lowConfidenceCutoff: config.lowConfidenceCutoff,
         maxClusters: config.maxClusters,

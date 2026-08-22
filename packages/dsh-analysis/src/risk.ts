@@ -3,6 +3,11 @@
  * 插件名：penx1-risk
  * 全生命周期风险登记册：最少 10 项、覆盖 R&D/MASS_PRODUCTION/OVERSEAS_LAUNCH、
  * 关键工程风险必须存在、Validation Gate 必须可验证。
+ *
+ * Commit #3 改造（tool-contract hardening）：
+ * - schema 收紧：risks items 定义 properties + required（canonical 字段）
+ * - execute 中逐项 assertObject + requireString/requireStringArray，缺字段抛结构化
+ *   INVALID_TOOL_INPUT（模型可据此修复参数），消除 risk.ts:44 `undefined.includes()` 崩溃
  */
 
 import type { Context } from '@deepseek-ai/cordis'
@@ -11,6 +16,7 @@ import { defineTool } from '@deepseek-ai/dsh-tools'
 import type { RiskItem } from '@penx1/contracts'
 import { Penx1Error, RISK_REQUIRED_FIELDS, isVerifiableGate, isoNow } from '@penx1/contracts'
 import { completeStep } from './helpers.js'
+import { assertObject, requireString, requireStringArray } from './input-guard.js'
 
 export const name = 'penx1-risk'
 
@@ -31,6 +37,28 @@ export const CRITICAL_ENGINEERING_RISKS = ['多长度', '升压', '误识别', '
 export interface RiskRegisterCheck {
   valid: boolean
   reasons: string[]
+}
+
+/**
+ * 规范化并校验单条风险输入（LLM Tool Input → Runtime Validation → Normalization）。
+ * 缺字段 / 类型错 / 空串 → INVALID_TOOL_INPUT（结构化，Agent 可据此修复参数），
+ * 而非 `undefined.includes()` 崩溃（Agent 只会盲目重试并烧光 Step Budget）。
+ */
+function normalizeRiskItem(raw: unknown, index: number): RiskItem {
+  assertObject(raw, `risks[${index}]`)
+  const obj = raw as Record<string, unknown>
+  return {
+    riskId: requireString(obj, `risks[${index}].riskId`, ['riskId'], 'riskId'),
+    phase: requireString(obj, `risks[${index}].phase`, ['phase'], 'phase') as RiskItem['phase'],
+    severity: requireString(obj, `risks[${index}].severity`, ['severity'], 'severity') as RiskItem['severity'],
+    difficulty: requireString(obj, `risks[${index}].difficulty`, ['difficulty'], 'difficulty') as RiskItem['difficulty'],
+    rootCause: requireString(obj, `risks[${index}].rootCause`, ['rootCause'], 'rootCause'),
+    negativeImpact: requireString(obj, `risks[${index}].negativeImpact`, ['negativeImpact'], 'negativeImpact'),
+    mitigation: requireString(obj, `risks[${index}].mitigation`, ['mitigation'], 'mitigation'),
+    validationGate: requireString(obj, `risks[${index}].validationGate`, ['validationGate'], 'validationGate'),
+    owner: requireString(obj, `risks[${index}].owner`, ['owner', 'responsible'], 'owner'),
+    evidenceRefs: requireStringArray(obj, `risks[${index}].evidenceRefs`, ['evidenceRefs'], 'evidenceRefs'),
+  }
 }
 
 /** 确定性校验（方案 §20.6）。 */
@@ -63,7 +91,27 @@ export function apply(ctx: Context, config: Config): void {
     description: '建立全生命周期风险登记册（字段完整、Gate 可验证、三阶段全覆盖）',
     parameters: {
       runId: { type: 'string', required: true, description: 'PEN-X1 Run ID' },
-      risks: { type: 'array', required: true, description: '风险列表（基于固定风险库模板）', items: { type: 'object', additionalProperties: true } },
+      risks: {
+        type: 'array',
+        required: true,
+        description: '风险列表（基于固定风险库模板）',
+        items: {
+          type: 'object',
+          additionalProperties: true,
+          properties: {
+            riskId: { type: 'string',  },
+            phase: { type: 'string', enum: ['R&D', 'EVT', 'DVT', 'PVT', 'MASS_PRODUCTION', 'OVERSEAS_LAUNCH'] },
+            severity: { type: 'string', enum: ['critical', 'high', 'medium', 'low'] },
+            difficulty: { type: 'string', enum: ['high', 'medium', 'low'] },
+            rootCause: { type: 'string',  },
+            negativeImpact: { type: 'string',  },
+            mitigation: { type: 'string',  },
+            validationGate: { type: 'string',  },
+            owner: { type: 'string',  },
+            evidenceRefs: { type: 'array', items: { type: 'string',  } },
+          },
+        },
+      },
     },
     output: {
       schema: {
@@ -81,7 +129,9 @@ export function apply(ctx: Context, config: Config): void {
     },
     async execute(args) {
       ctx.penx1Run.assert(args.runId, ['opportunitiesReady'])
-      const risks = (args.risks ?? []) as unknown as RiskItem[]
+      const rawInput = Array.isArray(args.risks) ? (args.risks as unknown[]) : []
+      // 输入契约校验：逐项 assertObject + requireString，缺字段走结构化 INVALID_TOOL_INPUT
+      const risks: RiskItem[] = rawInput.map((raw, index) => normalizeRiskItem(raw, index))
       const check = validateRiskRegister(risks, config)
       if (!check.valid) {
         throw new Penx1Error('RISK_SCHEMA_INVALID', `风险登记册校验失败：${check.reasons.join('；')}`)

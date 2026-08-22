@@ -15,6 +15,8 @@ export const PENX1_ERRORS = [
   'REPORT_NOT_AUTHORIZED',
   'CONFIG_INVALID',
   'DATA_FILE_OUTSIDE_ROOT',
+  'INVALID_TOOL_INPUT',
+  'BUSINESS_RULE_VIOLATION',
 ] as const
 
 export type Penx1ErrorCode = typeof PENX1_ERRORS[number]
