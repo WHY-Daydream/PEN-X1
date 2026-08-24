@@ -34,10 +34,14 @@ export const Config: z<Config> = z.object({
 
 export const inject = ['tools', 'penx1Run', 'penx1Evidence']
 
+/** Gate 结论枚举（与 data/scenarios/*.json 的 expectation 对齐）；说明文字不得混入结论值。 */
+export const GATE_VALUES = ['GO', 'CONDITIONAL_GO', 'NO_GO'] as const
+export type GateValue = (typeof GATE_VALUES)[number]
+
 export interface GateSection {
-  engineering: string
-  massProduction: string
-  listing: string
+  engineering: GateValue
+  massProduction: GateValue
+  listing: GateValue
 }
 
 export interface ReportInput {
@@ -127,6 +131,33 @@ export function renderReport(runId: string, input: ReportInput, audit: EvidenceA
   return lines.join('\n')
 }
 
+/**
+ * 校验三 Gate 结论（G5 回归教训：模型曾把"结论词+放行条件长文"混进 Gate 值并跨 case 漂移）。
+ * 每个值必须精确属于 GATE_VALUES；缺失/空/非字符串/带后缀 → 结构化 INVALID_TOOL_INPUT
+ * （Agent 可据此只重传 Gate 枚举值，而不是烧光 Step Budget）。
+ * 放行条件/说明应写入 executiveSummary 或 sections，而不是 Gate 结论字段。
+ */
+export function normalizeGates(raw: unknown, path = 'gates'): GateSection {
+  if (raw === null || typeof raw !== 'object' || Array.isArray(raw)) {
+    throw new Penx1Error('INVALID_TOOL_INPUT', `${path}: 必须是对象（含 engineering/massProduction/listing）`)
+  }
+  const obj = raw as Record<string, unknown>
+  const result = {} as GateSection
+  for (const key of ['engineering', 'massProduction', 'listing'] as const) {
+    const v = obj[key]
+    const trimmed = typeof v === 'string' ? v.trim() : ''
+    if (trimmed.length === 0) {
+      throw new Penx1Error('INVALID_TOOL_INPUT', `${path}.${key}: 为必填 Gate 结论（当前缺失/空/非字符串）`)
+    }
+    if (!(GATE_VALUES as readonly string[]).includes(trimmed)) {
+      throw new Penx1Error('INVALID_TOOL_INPUT',
+        `${path}.${key}: 必须是 ${GATE_VALUES.join(' / ')} 之一（当前 "${trimmed.slice(0, 60)}"；放行条件说明请写入 executiveSummary 或对应 section，不要混入 Gate 结论）`)
+    }
+    result[key] = trimmed as GateSection[typeof key]
+  }
+  return result
+}
+
 /** 原子写入：临时文件 + rename，返回 SHA-256（方案 §21.5）。 */
 export async function writeReportAtomic(filePath: string, content: string): Promise<string> {
   await mkdir(dirname(filePath), { recursive: true })
@@ -146,12 +177,12 @@ export function apply(ctx: Context, config: Config): void {
       gates: {
         type: 'object',
         required: true,
-        additionalProperties: true,
-        description: '工程/量产/Listing 三个 Gate 结论',
+        additionalProperties: false,
+        description: '工程/量产/Listing 三个 Gate 结论；每个值必须是 GO / CONDITIONAL_GO / NO_GO 之一（纯枚举值，禁止附带说明文字；放行条件请写入 executiveSummary 或 sections）',
         properties: {
-          engineering: { type: 'string' },
-          massProduction: { type: 'string' },
-          listing: { type: 'string' },
+          engineering: { type: 'string', enum: [...GATE_VALUES] },
+          massProduction: { type: 'string', enum: [...GATE_VALUES] },
+          listing: { type: 'string', enum: [...GATE_VALUES] },
         },
       },
       sections: { type: 'object', additionalProperties: true, description: '各章节内容（可选）' },
@@ -185,10 +216,12 @@ export function apply(ctx: Context, config: Config): void {
       if (!assertPathWithin(resolve(config.outputDir), filePath)) {
         throw new Penx1Error('DATA_FILE_OUTSIDE_ROOT', `输出路径越界：${filePath}`)
       }
+      // Gate 结论契约校验：非枚举值/缺失 → 结构化 INVALID_TOOL_INPUT（不放宽业务 Gate）
+      const gates = normalizeGates(args.gates)
       const mockDeclaration = `本报告数据边界：附件事实、${MOCK_BANNER}、通用行业知识；不包含真实 Amazon 搜索或业务爬取数据。`
       const markdown = renderReport(args.runId, {
         executiveSummary: args.executiveSummary,
-        gates: args.gates as GateSection,
+        gates,
         sections: args.sections as ReportInput['sections'],
       }, audit, mockDeclaration)
       const sha256 = await writeReportAtomic(filePath, markdown)

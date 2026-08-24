@@ -22,7 +22,7 @@ export interface Config {
 }
 
 export const Config: z<Config> = z.object({
-  maxSteps: z.number().default(18),
+  maxSteps: z.number().default(50),
   maxRetriesPerTool: z.number().default(2),
   allowParallelDataTools: z.boolean().default(true),
   allowParallelFinalAnalyses: z.boolean().default(true),

@@ -105,7 +105,7 @@
     - id: penx1-workflow-guard
       name: '/mnt/workspace/DSH/Power Availability/packages/dsh-core/src/workflow-guard.ts'
       config:
-        maxSteps: 18
+        maxSteps: 50
         maxRetriesPerTool: 2
         allowParallelDataTools: true
         allowParallelFinalAnalyses: true

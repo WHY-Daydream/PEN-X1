@@ -106,7 +106,7 @@
     - id: penx1-workflow-guard
       name: '@penx1/dsh-core/workflow-guard'
       config:
-        maxSteps: 18
+        maxSteps: 50
         maxRetriesPerTool: 2
         allowParallelDataTools: true
         allowParallelFinalAnalyses: true
