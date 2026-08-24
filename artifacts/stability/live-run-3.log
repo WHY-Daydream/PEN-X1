@@ -1,0 +1,44 @@
+[G5-live] missing-data-4 开始（missing-data）
+[G5-live] missing-data-4 完成 exit=1 FAIL 59995ms
+[G5-live] conflict-data-1 开始（conflict-data）
+[G5-live] conflict-data-1 完成 exit=1 FAIL 15459ms
+[G5-live] conflict-data-2 开始（conflict-data）
+[G5-live] conflict-data-2 完成 exit=1 FAIL 20300ms
+[G5-live] conflict-data-3 开始（conflict-data）
+[G5-live] conflict-data-3 完成 exit=1 FAIL 15449ms
+[G5-live] illegal-order-1 开始（illegal-order）
+[G5-live] illegal-order-1 完成 exit=1 FAIL 14934ms
+[G5-live] illegal-order-2 开始（illegal-order）
+[G5-live] illegal-order-2 完成 exit=1 FAIL 16612ms
+[G5-live] illegal-order-3 开始（illegal-order）
+[G5-live] illegal-order-3 完成 exit=1 FAIL 15499ms
+[G5-live] 累计 29 次，成功 13 次（44.8%）
+[G5-live] baseline-1 OK 400622ms exit=0
+[G5-live] baseline-2 OK 800160ms exit=0
+[G5-live] baseline-3 OK 354602ms exit=0
+[G5-live] baseline-4 OK 533295ms exit=0
+[G5-live] baseline-5 OK 659736ms exit=0
+[G5-live] baseline-6 OK 441931ms exit=0
+[G5-live] baseline-7 OK 593864ms exit=0
+[G5-live] baseline-8 OK 471398ms exit=0
+[G5-live] baseline-9 OK 786280ms exit=0
+[G5-live] baseline-10 OK 612905ms exit=0
+[G5-live] missing-data-1 OK 746107ms exit=0
+[G5-live] missing-data-2 OK 1324926ms exit=0
+[G5-live] missing-data-3 OK 1566577ms exit=0
+[G5-live] missing-data-4 FAIL 1800134ms exit=null
+[G5-live] conflict-data-1 FAIL 1800131ms exit=null
+[G5-live] missing-data-4 FAIL 5ms exit=-1
+[G5-live] conflict-data-1 FAIL 4ms exit=-1
+[G5-live] conflict-data-2 FAIL 4ms exit=-1
+[G5-live] conflict-data-3 FAIL 4ms exit=-1
+[G5-live] illegal-order-1 FAIL 4ms exit=-1
+[G5-live] illegal-order-2 FAIL 4ms exit=-1
+[G5-live] illegal-order-3 FAIL 5ms exit=-1
+[G5-live] missing-data-4 FAIL 59995ms exit=1
+[G5-live] conflict-data-1 FAIL 15459ms exit=1
+[G5-live] conflict-data-2 FAIL 20300ms exit=1
+[G5-live] conflict-data-3 FAIL 15449ms exit=1
+[G5-live] illegal-order-1 FAIL 14934ms exit=1
+[G5-live] illegal-order-2 FAIL 16612ms exit=1
+[G5-live] illegal-order-3 FAIL 15499ms exit=1

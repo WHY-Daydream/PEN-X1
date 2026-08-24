@@ -1,0 +1,9 @@
+[G5-live] baseline-1 开始（baseline）
+[G5-live] baseline-1 完成 exit=1 FAIL 69044ms
+[G5-live] ===== Attempt-level（工程运行稳定性）=====
+[G5-live] 累计 attempts 1 次 | 成功 0 | 失败 1
+[G5-live]   - LIFECYCLE: 1
+[G5-live] ===== Case-level（G5 验收口径）=====
+[G5-live] 计划 20 个 case | 已执行 1 个 | 最终成功 0 个
+[G5-live] 已执行口径成功率 0.0%（最终成功/已执行）| 计划口径成功率 0.0%（最终成功/计划 20）
+[G5-live] baseline-1 FAIL 69044ms exit=1

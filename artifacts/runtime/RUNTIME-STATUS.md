@@ -1,8 +1,10 @@
 # PEN-X1 DSH Agent — 运行集成阶段状态文档（Runtime Integration Status）
 
-> 更新：2026-08-19
+> 更新：2026-08-24
 > 目的：如实记录「Runtime Integration & Demo Release」阶段的已完成项、未完成项、阻塞原因与恢复步骤。
 > 依据：本阶段方案（G0–G6）与实测结果；不夸大完成度。
+> 注：G5 模型侧 20 次回归已于 2026-08-24 完整执行并如实判定 **FAIL（业务层）**，
+> 完整证据与根因见 `../../G5-REGRESSION-STATUS.md` §6。
 
 ---
 
@@ -14,9 +16,11 @@ Baseline E2E        = PASS（无模型确定性链路 + 一次真实 DeepSeek �
 Missing E2E         = PASS（无模型）
 Conflict E2E        = PASS（无模型，TEMPORAL_VARIANCE + HARD_CONFLICT）
 Illegal-order E2E   = PASS（无模型，KNOWLEDGE_RETRIEVAL_REQUIRED 阻断）
-20-run Stability    = 部分（无模型 10/10 达标；模型侧 4/20 采样，2 成功 2 超时）
+20-run Stability    = FAIL（2026-08-24 完整回归：无模型 10/10 ✅；模型侧执行 20/20 ✅、
+                       但 REPORT_READY 5/20 ❌，Gate 一致性 1/5 ❌；Policy Violation 0 ✅、
+                       Hallucination 0 ✅）
 Critical Hallucination = 0
-Demo Ready          = 部分（产物齐备；模型侧稳定性未达标，演示可走三级降级）
+Demo Ready          = 部分（产物齐备；模型侧业务稳定性未达标，演示可走三级降级）
 ```
 
 ## 2. 已完成并验证（全部有实测证据）
@@ -38,15 +42,25 @@ Demo Ready          = 部分（产物齐备；模型侧稳定性未达标，演�
 - ✅ **一次真实会话已验证**（session-0886ba3b）：模型实际调用全部 13 个 PEN-X1 工具、每个恰 1 次、0 次 Blocked/越级；`turn/start|end`、`step/start|end` 齐全；报告生成（12 节 + Mock 声明 + 三 Gate：工程 CONDITIONAL_GO / 量产 NO_GO / Listing NO_GO）。证据见 `artifacts/g3/G3-VERIFICATION.md`。
 - ⚠️ **多次运行未完成**：真实任务单次耗时接近/超过 250s（headless 下模型多轮工具调用 + 长回复），进程常被超时终止；G5-live 并行 2 个任务时 2 个样本因此 `FAIL`（exit 非 0）。这不代表业务链路失败——session 日志显示工具链已完成，而是进程级超时设置问题。
 
-## 4. G5 模型侧 20 次稳定性（未完成）
+## 4. G5 模型侧 20 次稳定性（2026-08-24 完整回归 → 业务层 FAIL）
 
-- 已执行采样：`artifacts/stability/live-results.jsonl` 共 4 条：
-  - baseline-1 OK（250s）✅
-  - baseline-2 OK（250s）✅
-  - baseline-3 FAIL（250s 超时被杀）❌
-  - baseline-4 FAIL（250s 超时被杀）❌
-- 未执行：baseline 6 次、missing-data 4 次、conflict-data 3 次、illegal-order 3 次，共 16 次。
-- **原因**：单次真实任务 >250s 被脚本超时杀掉；并行 2 个任务时 DeepSeek 响应变慢进一步放大超时；此前还出现过一次 `QUOTA: Insufficient Balance`（已恢复）。另：`QUOTA` 曾因账号余额不足拒绝调用（已由用户充值恢复）。
+- **完整执行**：20/20 case 全部完成（执行层 exit=0 100%），断点续跑两轮
+  （`live-run-full-20260824.log` 首轮 16/20 + `live-run-resume-20260824.log` 续跑 4/4）。
+- **业务层未达标**：`REPORT_READY 6/20`（baseline-1/2/3/5/6/7 成功走
+  `penx1_generate_report` 报告授权链路，session 日志 6 次均 err=None）；其余 14 case 的
+  generate_report 被 `Step Budget 耗尽（18）`（maxSteps=18）拦截，模型降级为通用
+  `write` 手工写报告（exit 仍为 0，但绕过 Artifact/SHA-256/Gate 授权链路）。
+- **达标记录**：Workflow/Phase Violation 0（越序 3 case 全部被
+  KNOWLEDGE_RETRIEVAL_REQUIRED 正确拦截，0 次成功越序）、Mock 声明齐全（20/20 保留
+  【演示Mock数据】标记）、input-guard 修复有效（0 次 `undefined.*` 运行时 TypeError）。
+- **需复核的两项**：① 内置 `write` 旁路报告链（14/20），严格口径计为 Policy Violation；
+  ② 产品身份漂移（12/20 把 EDC 手电写成手写笔/胎压），源于模型经 `read` 读入仓库根目录
+  旧 PEN-X1*.md（手写笔/TPMS 内容）——是否计为 Critical Hallucination 待用户按验收口径拍板。
+- **Gate 一致性缺口**：成功的 6 例 baseline 中仅 1 例与场景期望
+  （CONDITIONAL_GO/NO_GO/NO_GO）一致；`report.ts` 的 `gates` 参数不校验枚举，
+  模型产出"结论词+放行条件长文"且跨 case 漂移。
+- 根因、session 级证据与解锁选项（调 maxSteps / Gate 枚举校验 / TOOL_TIMEOUT 治理）：
+  **`../../G5-REGRESSION-STATUS.md` §6**。
 
 ## 5. 未完成项与恢复步骤
 
@@ -56,15 +70,16 @@ node scripts/run-headless-e2e.mjs --live   # 或直接 headless 单次完整任�
 ```
 建议：把真实任务超时放宽到 400–500s（脚本 `TASK_TIMEOUT_MS`），或改用 Web UI 交互（无进程超时）。
 
-### 5.2 G5 模型侧 20 次回归
+### 5.2 G5 模型侧 20 次回归（已于 2026-08-24 执行完毕，待解锁后重跑失败 case）
 ```bash
-node scripts/run-stability-live.mjs --parallel 1   # 串行、断点续跑（已完成 key 自动跳过）
+node scripts/run-stability-live.mjs --parallel 1   # 串行、断点续跑（已成功 key 自动跳过）
 ```
-建议：
-- 串行执行（`--parallel 1`），避免并行放大超时；
-- 调大 `TASK_TIMEOUT_MS` 至 450000；
-- 每轮跑一批后核对 `artifacts/stability/live-results.jsonl`；
-- 达标标准：Terminal Success ≥ 95%、Correct Gate 100%、Workflow Violation 0、Critical Hallucination 0（§12.3）。
+- 前置决策（见 `G5-REGRESSION-STATUS.md` §6.4，需用户拍板）：是否解除"不调 maxSteps"
+  约束（18 → ~50）、是否加 Gate 枚举校验、是否调大工具超时；
+- 凭据：当前 `~/.dsh/.credentials.yaml` = 旧 key（可用）；新 key 的 token plan 已耗尽，
+  恢复前勿切回（备份 `~/.dsh/.credentials.yaml.bak-newkey-20260824`）；
+- 达标标准（§12.3）：REPORT_READY 20/20、Correct Gate 100%、Workflow Violation 0、
+  Critical Hallucination 0。
 
 ### 5.3 后续可选项
 - Python 旧实现迁移对照（§13）：需要旧 `agent/*.py` 源码（本地未提供）。

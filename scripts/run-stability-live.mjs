@@ -44,13 +44,25 @@ function readDone() {
     .map((r) => r.key)
 }
 
+/** 解析 pnpm 可执行文件的实际路径（兼容 corepack / 全局安装）。 */
+function resolvePnpm() {
+  const candidates = [
+    '/root/.nvm/versions/node/v22.22.0/bin/pnpm',
+    '/root/.nvm/versions/node/v22.22.0/bin/corepack',
+  ]
+  for (const c of candidates) { if (existsSync(c)) return c }
+  return 'pnpm'
+}
+
 function runOne(key, scenario, task) {
   return new Promise((resolvePromise) => {
     console.log(`[G5-live] ${key} 开始（${scenario}）`)
     const started = Date.now()
-    const child = spawn('pnpm', ['dsh', '--profile', 'headless', '--patch', PATCH, task], {
+    const pnpmExe = resolvePnpm()
+    const pnpmArgs = pnpmExe.endsWith('corepack') ? ['pnpm', 'dsh', '--profile', 'headless', '--patch', PATCH, task] : ['dsh', '--profile', 'headless', '--patch', PATCH, task]
+    const child = spawn(pnpmExe, pnpmArgs, {
       cwd: HARNESS,
-      env: { ...process.env },
+      env: { ...process.env, PATH: `${process.env.PATH}:/root/.nvm/versions/node/v22.22.0/bin` },
       stdio: ['ignore', 'pipe', 'pipe'],
     })
     let stdout = ''

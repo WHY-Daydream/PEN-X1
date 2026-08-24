@@ -77,7 +77,7 @@ node scripts/run-headless-e2e.mjs   # 无模型回归；--live 走真实 DeepSee
 | G4 四场景 E2E | ✅ | `artifacts/baseline|missing-data|conflict-data|illegal-order/` |
 | G5 无模型稳定性 | ✅ | `artifacts/stability/stability-report.md`（10/10，成功率 100%） |
 | G3 真实 DeepSeek 链路 | ✅ | `artifacts/g3/G3-VERIFICATION.md`（1 次完整会话：13 工具全调用、0 违规、三 Gate 正确） |
-| G5 模型侧 20 次 | ⚠️ 部分 | 采样 4 次（2 成功 2 超时）；恢复命令见 `artifacts/runtime/RUNTIME-STATUS.md` §5.2 |
+| G5 模型侧 20 次 | ❌ FAIL（业务层） | 2026-08-24 完整回归（执行层 20/20；REPORT_READY 6/20、Correct Gate 1/6、内置 write 旁路 14/20、身份漂移 12/20；根因 maxSteps=18 配置优先级 bug，详见 `artifacts/stability/G5-LIVE-20260824.md` §3-4） |
 
 > 完整、如实的状态记录（含未完成项与恢复步骤）：**`artifacts/runtime/RUNTIME-STATUS.md`**。
 

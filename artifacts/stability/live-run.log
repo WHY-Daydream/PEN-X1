@@ -1,2 +1,31 @@
+[G5-live] baseline-1 开始（baseline）
+[G5-live] baseline-1 完成 exit=0 OK 400622ms
+[G5-live] baseline-2 开始（baseline）
+[G5-live] baseline-2 完成 exit=0 OK 800160ms
 [G5-live] baseline-3 开始（baseline）
+[G5-live] baseline-3 完成 exit=0 OK 354602ms
 [G5-live] baseline-4 开始（baseline）
+[G5-live] baseline-4 完成 exit=0 OK 533295ms
+[G5-live] baseline-5 开始（baseline）
+[G5-live] baseline-5 完成 exit=0 OK 659736ms
+[G5-live] baseline-6 开始（baseline）
+[G5-live] baseline-6 完成 exit=0 OK 441931ms
+[G5-live] baseline-7 开始（baseline）
+[G5-live] baseline-7 完成 exit=0 OK 593864ms
+[G5-live] baseline-8 开始（baseline）
+[G5-live] baseline-8 完成 exit=0 OK 471398ms
+[G5-live] baseline-9 开始（baseline）
+[G5-live] baseline-9 完成 exit=0 OK 786280ms
+[G5-live] baseline-10 开始（baseline）
+[G5-live] baseline-10 完成 exit=0 OK 612905ms
+[G5-live] missing-data-1 开始（missing-data）
+[G5-live] missing-data-1 完成 exit=0 OK 746107ms
+[G5-live] missing-data-2 开始（missing-data）
+[G5-live] missing-data-2 完成 exit=0 OK 1324926ms
+[G5-live] missing-data-3 开始（missing-data）
+[G5-live] missing-data-3 完成 exit=0 OK 1566577ms
+[G5-live] missing-data-4 开始（missing-data）
+[G5-live] missing-data-4 完成 exit=null FAIL 1800134ms
+[G5-live] conflict-data-1 开始（conflict-data）
+[G5-live] conflict-data-1 完成 exit=null FAIL 1800131ms
+[G5-live] conflict-data-2 开始（conflict-data）
