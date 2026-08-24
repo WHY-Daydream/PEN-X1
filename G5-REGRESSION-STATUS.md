@@ -1,6 +1,7 @@
 # PEN-X1 G5 回归 — 任务状态与续接文档
 
-> 更新：2026-08-24 22:30 | 目的：记录 G5 回归已完成/未完成工作，供下次会话无缝续接。
+> 更新：2026-08-25 | 目的：记录 G5 回归已完成/未完成工作，供下次会话无缝续接。
+> 注：2026-08-25 状态快照与缺失任务清单见 **§7**（续接从这里开始）。
 > 仓库：git@github.com:WHY-Daydream/PEN-X1.git（本地 clone：`/mnt/workspace/DSH/Power Availability`）
 
 ## 0. 2026-08-24 完整 20-case 回归结果（本轮执行）
@@ -259,3 +260,52 @@ token plan 已耗尽（`quota_exceeded_error`，与分钟级 RPM/TPM 限流不�
 | `artifacts/stability/live-results.jsonl` | attempt 历史（25 行；按 case key 最新记录 = 20/20 OK） |
 | `artifacts/stability/live-run-early-gate-20260824{,-r2}.log` | Early Gate r1（69s 429 FAIL）/ r2（684s OK） |
 | `~/.dsh/sessions/…/session-<uuid>/session.jsonl.zstd` | 各 case 完整会话日志（zstd 压缩） |
+
+---
+
+## 7. 2026-08-25 状态快照与缺失任务清单（续接从这里开始）
+
+### 7.1 已完成（2026-08-24 之后新增）
+
+| # | 内容 | 状态/证据 |
+| --- | --- | --- |
+| 23 | maxSteps 恢复 50（workflow-guard 默认值 + 三处 yml） | ✅ 已提交 `df3363f` 并推送 |
+| 24 | report.ts 新增 `normalizeGates` 枚举校验（GO/CONDITIONAL_GO/NO_GO）+ schema 收紧 + 契约测试 | ✅ 已提交 `df3363f` 并推送（单测全绿，report.spec.ts 11 项） |
+| 25 | verify-g5 确定性回归复核（修复后） | ✅ 10/10（100%，2026-08-25） |
+| 26 | 修复后 20-case 回归**启动** | ⏸ **已启动后暂停**：baseline-1 OK（362s）后用户决定下次再跑；断点保留在 `live-results.jsonl`（仅 baseline-1 一条） |
+| 27 | 全量证据/状态文档推送 | ✅ 已推送 `89eae6a`（G5-REGRESSION-STATUS.md、G5-LIVE-20260824.md、README、RUNTIME-STATUS、全部日志） |
+
+### 7.2 缺失任务（未完成，按优先级）
+
+| # | 任务 | 说明 / 命令 |
+| --- | --- | --- |
+| 28 | **续跑修复后 20-case 回归**（maxSteps=50 + Gate 枚举校验） | 断点续跑（已完成 baseline-1 自动跳过）约 2.5–4h，命令见 §7.3 |
+| 29 | **业务验收判定**（§4.6 口径） | REPORT_READY 20/20、Correct Gate 100%（对照 `data/scenarios/baseline.json`）、Policy Violation 0、Hallucination 0、critical missing 4/4 + conflict 3/3 + illegal-order 3/3 |
+| 30 | **Commit #4**（G5 PASS 证据） | 仅当 §4.6 全部达标才具备资格；message 建议：`test(g5): pass 20-case live regression after maxsteps + gate-enum fix`；提交需用户确认 |
+| 31 | **workflow-guard 封堵内置文件工具旁路**（可选修复） | 14/20 会话用无 runId 的内置 `write` 绕过报告链；headless 场景禁 write/read 或强制报告仅经 `penx1_generate_report` 落盘 |
+| 32 | **清理 harness 仓库根目录旧 PEN-X1*.md** | 身份漂移根因之一（手写笔/TPMS 内容被 `read` 读入）；**属破坏性操作，需用户确认** |
+| 33 | **maxRetriesPerTool=2 死配置**（Commit #5，独立） | workflow-guard apply() 未使用该配置；per-tool retry budget + 相同 deterministic error 熔断 |
+| 34 | **TOOL_TIMEOUT 治理**（独立） | 真实回归各 case 1–7 次 DSH 工具执行超时（基础设施侧）；是否调大超时待评估，与"不改 retryPolicy"约束相关 |
+| 35 | **新 key 配额恢复**（外部依赖） | `sk-RO17…sEEM` token plan 已耗尽（`quota_exceeded_error`，连 5-token ping 均 429）；需充值/等待 plan 恢复后才可用；当前凭据为旧 key `sk-yHb2…`（正常） |
+
+### 7.3 续跑命令（下次会话直接执行）
+
+```bash
+# 1) 确认凭据（当前为旧 key，配额正常；新 key 不可用见 #35）
+cat ~/.dsh/.credentials.yaml
+
+# 2) 断点续跑剩余 19 case（串行；已完成 key 自动跳过）
+cd "/mnt/workspace/DSH/Power Availability"
+export DEEPSEEK_BASE_URL=https://token.sensenova.cn/v1
+setsid nohup node scripts/run-stability-live.mjs --parallel 1 </dev/null > artifacts/stability/live-run-fix-maxsteps50-20260825.log 2>&1 &
+
+# 3) 监控（每 ~5min 一次）
+tail -5 artifacts/stability/live-run-fix-maxsteps50-20260825.log
+wc -l < artifacts/stability/live-results.jsonl
+```
+
+### 7.4 验收后收尾（#29 达标后）
+
+1. 更新 README Gate 表 G5 行：`❌ FAIL（业务层）` → `✅ PASS`（附证据路径）
+2. 更新 `artifacts/runtime/RUNTIME-STATUS.md` §1 结论与 §4
+3. 提交 Commit #4（#30）并推送，工作区收尾（`.bak` 备份不提交）
