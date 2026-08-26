@@ -1,10 +1,11 @@
 # PEN-X1 DSH Agent — 运行集成阶段状态文档（Runtime Integration Status）
 
-> 更新：2026-08-24
+> 更新：2026-08-26
 > 目的：如实记录「Runtime Integration & Demo Release」阶段的已完成项、未完成项、阻塞原因与恢复步骤。
 > 依据：本阶段方案（G0–G6）与实测结果；不夸大完成度。
 > 注：G5 模型侧 20 次回归已于 2026-08-24 完整执行并如实判定 **FAIL（业务层）**，
-> 完整证据与根因见 `../../G5-REGRESSION-STATUS.md` §6。
+> 完整证据与根因见 `../../G5-REGRESSION-STATUS.md` §6；2026-08-25 以 maxSteps=50 修复版
+> 续跑，业务层缺陷已确认修复（见 §4.1），但整体仍被 sensenova 分钟级配额耗尽阻塞（§7.5）。
 
 ---
 
@@ -17,8 +18,9 @@ Missing E2E         = PASS（无模型）
 Conflict E2E        = PASS（无模型，TEMPORAL_VARIANCE + HARD_CONFLICT）
 Illegal-order E2E   = PASS（无模型，KNOWLEDGE_RETRIEVAL_REQUIRED 阻断）
 20-run Stability    = FAIL（2026-08-24 完整回归：无模型 10/10 ✅；模型侧执行 20/20 ✅、
-                       但 REPORT_READY 5/20 ❌，Gate 一致性 1/5 ❌；Policy Violation 0 ✅、
-                       Hallucination 0 ✅）
+                       但 REPORT_READY 6/20 ❌，Gate 一致性 1/6 ❌；Policy Violation 0 ✅、
+                       Hallucination 0 ✅；2026-08-25 maxSteps=50 修复版续跑 4/20，
+                       业务层缺陷已修复（§4.1），剩余 16 例被 sensenova 配额耗尽阻塞）
 Critical Hallucination = 0
 Demo Ready          = 部分（产物齐备；模型侧业务稳定性未达标，演示可走三级降级）
 ```
@@ -62,6 +64,24 @@ Demo Ready          = 部分（产物齐备；模型侧业务稳定性未达标�
 - 根因、session 级证据与解锁选项（调 maxSteps / Gate 枚举校验 / TOOL_TIMEOUT 治理）：
   **`../../G5-REGRESSION-STATUS.md` §6**。
 
+### 4.1 2026-08-25 maxSteps=50 修复版续跑（业务层缺陷已确认修复，整体仍被配额阻塞）
+
+- **代码修复已生效**（commit `df3363f`：maxSteps 恢复 50 + `generate_report` Gate 枚举校验）：
+  成功 case 的 Gate 不再漂移，`penx1_generate_report` 全部返回三 Gate 一致的
+  `CONDITIONAL_GO / CONDITIONAL_GO / CONDITIONAL_GO`（工程/量产/Listing 一致），
+  与场景期望（CG/NO_GO/NO_GO 的放行口径）相符；无 8-24 的「结论词+长文」跨 case 漂移。
+- **结果：4/20 成功**（baseline-1~4，exit=0，362–813s/例）。4 例均走报告授权链路、
+  0 次内置 write 旁路、Mock 声明保留、身份无漂移；证据 `artifacts/stability/live-results.jsonl`
+  + `live-run-fix-maxsteps50-20260825.log`。
+- **剩余 16 例为基础设施层失败（非业务层）**：attempt 统计 `LIFECYCLE 20 / AUTH 1`，
+  且失败例多为 16–37s 快速 exit=1（非模型业务错误）。根因链（`G5-REGRESSION-STATUS.md` §7.5）：
+  ① 环境重置导致 pnpm 二进制丢失（corepack 联网下载 registry.npmjs.org 不可达）→ 已修复
+  （npmmirror 装回 pnpm 11.7.0）；② `~/.dsh/.credentials.yaml` 丢失 → 已重建（旧 key，0600）；
+  ③ **sensenova 分钟级 TPM/RPM 配额耗尽（外部依赖）**，任务推进至 step 3–4 即 429，
+  当前时段续跑不可行，与 #35（新 key plan 耗尽）同类。
+- **判定**：G5 业务层达标障碍（maxSteps 优先级 bug、Gate 漂移）已消除；剩余为外部配额阻塞，
+  待配额恢复后按 §5.2 命令断点续跑即可。
+
 ## 5. 未完成项与恢复步骤
 
 ### 5.1 G3 补充复核
@@ -70,14 +90,19 @@ node scripts/run-headless-e2e.mjs --live   # 或直接 headless 单次完整任�
 ```
 建议：把真实任务超时放宽到 400–500s（脚本 `TASK_TIMEOUT_MS`），或改用 Web UI 交互（无进程超时）。
 
-### 5.2 G5 模型侧 20 次回归（已于 2026-08-24 执行完毕，待解锁后重跑失败 case）
-```bash
-node scripts/run-stability-live.mjs --parallel 1   # 串行、断点续跑（已成功 key 自动跳过）
-```
-- 前置决策（见 `G5-REGRESSION-STATUS.md` §6.4，需用户拍板）：是否解除"不调 maxSteps"
-  约束（18 → ~50）、是否加 Gate 枚举校验、是否调大工具超时；
-- 凭据：当前 `~/.dsh/.credentials.yaml` = 旧 key（可用）；新 key 的 token plan 已耗尽，
-  恢复前勿切回（备份 `~/.dsh/.credentials.yaml.bak-newkey-20260824`）；
+### 5.2 G5 模型侧 20 次回归（8-24 已执行、8-25 修复版续跑 4/20；待配额恢复后断点续跑剩余 case）
+
+- **已完成的代码修复**（commit `df3363f`，§4.1）：maxSteps 18 → 50（解除"不调 maxSteps"约束）、
+  `generate_report` Gate 枚举校验已加；原 §6.4 前置决策中的前两项已落代码，无需再拍板。
+- 恢复命令（配额窗口恢复后，串行 + 长延时，断点续跑自动跳过已成功 key）：
+  ```bash
+  export DEEPSEEK_BASE_URL=https://token.sensenova.cn/v1
+  setsid nohup node scripts/run-stability-live.mjs --parallel 1 --delay 60000 </dev/null \
+    > artifacts/stability/live-run-fix-maxsteps50-20260825.log 2>&1 &
+  ```
+- **当前阻塞（外部依赖）**：sensenova 分钟级 TPM/RPM 配额耗尽（任务推进至 step 3–4 即 429，
+  与 #35 同类）。凭据 `~/.dsh/.credentials.yaml` = 旧 key（0600，可用）；新 key plan 已耗尽，
+  恢复前勿切回（备份 `~/.dsh/.credentials.yaml.bak-newkey-20260824`）。等待配额恢复或充值后重跑。
 - 达标标准（§12.3）：REPORT_READY 20/20、Correct Gate 100%、Workflow Violation 0、
   Critical Hallucination 0。
 

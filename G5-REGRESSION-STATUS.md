@@ -309,3 +309,45 @@ wc -l < artifacts/stability/live-results.jsonl
 1. 更新 README Gate 表 G5 行：`❌ FAIL（业务层）` → `✅ PASS`（附证据路径）
 2. 更新 `artifacts/runtime/RUNTIME-STATUS.md` §1 结论与 §4
 3. 提交 Commit #4（#30）并推送，工作区收尾（`.bak` 备份不提交）
+
+### 7.5 2026-08-25 上午续跑受阻记录（环境重置后）
+
+**现象**：按 §7.3 续跑，baseline-2..9 全部 3–10s 快速 exit=1（tail 为空）；修复后仍 17–49s exit=1。
+
+**根因链（已完整确认）**：
+
+1. **环境重置导致 pnpm 二进制丢失**：`/root/.nvm/versions/node/v22.22.0/bin/` 仅剩 corepack/node/npm/npx，
+   `run-stability-live.mjs` 的 `resolvePnpm()` 回退到 corepack → corepack 尝试联网下载
+   `pnpm@11.7.0`（registry.npmjs.org 不可达，connect timeout）→ 3–10s 快速失败。
+   ✅ 已修复：`npm i -g pnpm@11.7.0 --registry=https://registry.npmmirror.com`（npmmirror 可达），
+   装回脚本期望路径，`pnpm dsh --help` 正常。
+2. **凭据文件丢失**：`~/.dsh/.credentials.yaml` 不存在。✅ 已重建（旧 key `sk-yHb2…`，0600），
+   ping `https://token.sensenova.cn/v1/chat/completions`（模型 deepseek-v4-flash）HTTP 200。
+3. **sensenova 分钟级 TPM/RPM 配额紧张（外部阻塞，当前续跑不可行）**：pnpm 修复后任务可推进至
+   step 3–4（RUN-001 已建）才撞 `inference tpm exhausted` / `rpm exhausted`（429，session 日志
+   `provider: deepseek-official` 实为 sensenova 网关）；单发小请求（ping / 短任务 `你好`）正常。
+   08-24 成功轮（每 case 6–20 分钟、0 次 RATE_LIMIT）对比表明旧 key 配额随账户状态波动，
+   当前时段过紧，**与 #35（新 key plan 耗尽）同类，属外部依赖**。
+
+**状态**：`live-results.jsonl` 已清理回断点 `baseline-1` 一行（成功记录保留）；
+失败尝试已备份（`live-results.jsonl.bak-infra-fail-20260825`、`*.bak-rpm-20260825`、`*.bak-rpm2-20260825`，
+**不提交**）。当前无回归进程在跑。
+
+**恢复命令（配额窗口恢复后）**：
+
+```bash
+# 1) 确认凭据与 pnpm（本会话已恢复，无需重复）
+cat ~/.dsh/.credentials.yaml   # 旧 key，0600
+ls /root/.nvm/versions/node/v22.22.0/bin/pnpm   # pnpm 11.7.0（npmmirror 安装）
+
+# 2) 断点续跑（建议 --delay 60000，比默认 45s 更稳）
+cd "/mnt/workspace/DSH/Power Availability"
+export DEEPSEEK_BASE_URL=https://token.sensenova.cn/v1
+setsid nohup node scripts/run-stability-live.mjs --parallel 1 --delay 60000 </dev/null \
+  > artifacts/stability/live-run-fix-maxsteps50-20260825.log 2>&1 &
+
+# 3) 监控（每 ~5min）：tail -5 …log && wc -l < artifacts/stability/live-results.jsonl
+```
+
+**判定**：#28 续跑当前被 sensenova 分钟级配额阻塞（外部依赖，同 #35 性质），
+非代码/脚本缺陷；等待配额恢复（或新 key 充值）后按上述命令续跑即可无缝接上断点。
