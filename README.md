@@ -77,7 +77,7 @@ node scripts/run-headless-e2e.mjs   # 无模型回归；--live 走真实 DeepSee
 | G4 四场景 E2E | ✅ | `artifacts/baseline|missing-data|conflict-data|illegal-order/` |
 | G5 无模型稳定性 | ✅ | `artifacts/stability/stability-report.md`（10/10，成功率 100%） |
 | G3 真实 DeepSeek 链路 | ✅ | `artifacts/g3/G3-VERIFICATION.md`（1 次完整会话：13 工具全调用、0 违规、三 Gate 正确） |
-| G5 模型侧 20 次 | ❌ FAIL（未达标；业务层已修复，当前被外部配额阻塞） | 2026-08-24 完整回归（执行层 20/20；REPORT_READY 6/20、Correct Gate 1/6、内置 write 旁路 14/20、身份漂移 12/20；根因 maxSteps=18 配置优先级 bug，详见 `artifacts/stability/G5-LIVE-20260824.md` §3-4）；2026-08-25 修复后重跑（maxSteps=50 + Gate 枚举校验）：baseline-1~4 成功、三 Gate 正确（CONDITIONAL_GO）、0 旁路，整体 4/20（20%），其余 16 例为基础设施层失败（LIFECYCLE 20 / AUTH 1：pnpm 环境丢失 + sensenova 分钟级配额耗尽，外部依赖；详见 `G5-REGRESSION-STATUS.md` §7.5） |
+| G5 模型侧 20 次 | ❌ FAIL（未达标；业务层已修复，当前被外部配额阻塞） | 2026-08-24 完整回归（执行层 20/20；REPORT_READY 6/20、Correct Gate 1/6、内置 write 旁路 14/20、身份漂移 12/20；根因 maxSteps=18 配置优先级 bug，详见 `artifacts/stability/G5-LIVE-20260824.md` §3-4）；2026-08-25 修复后重跑（maxSteps=50 + Gate 枚举校验）：baseline-1~4 成功、三 Gate 正确（CONDITIONAL_GO）、0 旁路，整体 4/20（20%）；2026-08-26 强行试跑：20/20 执行、成功 5/20（25%，新增 illegal-order-3：Guard 正确拦截越序）、15 例全部 LIFECYCLE 基础设施层失败（sensenova 分钟级配额耗尽，外部依赖；详见 `G5-REGRESSION-STATUS.md` §7.5-7.6） |
 
 > 完整、如实的状态记录（含未完成项与恢复步骤）：**`artifacts/runtime/RUNTIME-STATUS.md`**。
 

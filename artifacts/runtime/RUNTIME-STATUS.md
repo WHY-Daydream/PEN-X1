@@ -20,7 +20,8 @@ Illegal-order E2E   = PASS（无模型，KNOWLEDGE_RETRIEVAL_REQUIRED 阻断）
 20-run Stability    = FAIL（2026-08-24 完整回归：无模型 10/10 ✅；模型侧执行 20/20 ✅、
                        但 REPORT_READY 6/20 ❌，Gate 一致性 1/6 ❌；Policy Violation 0 ✅、
                        Hallucination 0 ✅；2026-08-25 maxSteps=50 修复版续跑 4/20，
-                       业务层缺陷已修复（§4.1），剩余 16 例被 sensenova 配额耗尽阻塞）
+                       业务层缺陷已修复（§4.1）；2026-08-26 强行试跑 5/20（§4.2），
+                       剩余失败均被 sensenova 配额耗尽阻塞）
 Critical Hallucination = 0
 Demo Ready          = 部分（产物齐备；模型侧业务稳定性未达标，演示可走三级降级）
 ```
@@ -81,6 +82,20 @@ Demo Ready          = 部分（产物齐备；模型侧业务稳定性未达标�
   当前时段续跑不可行，与 #35（新 key plan 耗尽）同类。
 - **判定**：G5 业务层达标障碍（maxSteps 优先级 bug、Gate 漂移）已消除；剩余为外部配额阻塞，
   待配额恢复后按 §5.2 命令断点续跑即可。
+
+### 4.2 2026-08-26 强行试跑（配额穿插恢复验证，成功 5/20）
+
+- **执行**：按用户决定强行启动一轮（`--parallel 1 --delay 60000`，日志
+  `artifacts/stability/live-run-force-20260826.log`），20/20 case 全部执行完毕。
+- **成功 5/20（25%）**：baseline-1~4（与 8-25 相同，断点续跑语义未重跑）+
+  **illegal-order-3（新增，exit=0）**——模型未越序，明确停住向用户确认而非绕过
+  `KNOWLEDGE_RETRIEVAL_REQUIRED`，Guard 正确拦截，为 illegal-order 场景提供
+  一例业务正确行为证据。
+- **失败 15/20**：全部归类 **LIFECYCLE**（无 AUTH），13–203s 快速失败，特征与 8-25
+  基础设施层失败一致——sensenova 分钟级配额仍紧（外部依赖，同 #35 性质）。
+- **判定**：整体仍未达标（20/20、Correct Gate 100% 未达成），阻塞不变；`live-results.jsonl`
+  现保留全部 20 条记录（成功 5 条为断点），配额窗口恢复后按 §5.2 命令续跑即可，
+  脚本自动跳过已成功 key。
 
 ## 5. 未完成项与恢复步骤
 

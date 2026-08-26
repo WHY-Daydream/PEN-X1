@@ -1,0 +1,58 @@
+[G5-live] baseline-5 开始（baseline）
+[G5-live] baseline-5 完成 exit=1 FAIL 67920ms
+[G5-live] baseline-6 开始（baseline）
+[G5-live] baseline-6 完成 exit=1 FAIL 22803ms
+[G5-live] baseline-7 开始（baseline）
+[G5-live] baseline-7 完成 exit=1 FAIL 36713ms
+[G5-live] baseline-8 开始（baseline）
+[G5-live] baseline-8 完成 exit=1 FAIL 156888ms
+[G5-live] baseline-9 开始（baseline）
+[G5-live] baseline-9 完成 exit=1 FAIL 107598ms
+[G5-live] baseline-10 开始（baseline）
+[G5-live] baseline-10 完成 exit=1 FAIL 13080ms
+[G5-live] missing-data-1 开始（missing-data）
+[G5-live] missing-data-1 完成 exit=1 FAIL 46534ms
+[G5-live] missing-data-2 开始（missing-data）
+[G5-live] missing-data-2 完成 exit=1 FAIL 13608ms
+[G5-live] missing-data-3 开始（missing-data）
+[G5-live] missing-data-3 完成 exit=1 FAIL 21287ms
+[G5-live] missing-data-4 开始（missing-data）
+[G5-live] missing-data-4 完成 exit=1 FAIL 14452ms
+[G5-live] conflict-data-1 开始（conflict-data）
+[G5-live] conflict-data-1 完成 exit=1 FAIL 129657ms
+[G5-live] conflict-data-2 开始（conflict-data）
+[G5-live] conflict-data-2 完成 exit=1 FAIL 23454ms
+[G5-live] conflict-data-3 开始（conflict-data）
+[G5-live] conflict-data-3 完成 exit=1 FAIL 96879ms
+[G5-live] illegal-order-1 开始（illegal-order）
+[G5-live] illegal-order-1 完成 exit=1 FAIL 202677ms
+[G5-live] illegal-order-2 开始（illegal-order）
+[G5-live] illegal-order-2 完成 exit=1 FAIL 25425ms
+[G5-live] illegal-order-3 开始（illegal-order）
+[G5-live] illegal-order-3 完成 exit=0 OK 139786ms
+[G5-live] ===== Attempt-level（工程运行稳定性）=====
+[G5-live] 累计 attempts 20 次 | 成功 5 | 失败 15
+[G5-live]   - LIFECYCLE: 15
+[G5-live] ===== Case-level（G5 验收口径）=====
+[G5-live] 计划 20 个 case | 已执行 20 个 | 最终成功 5 个
+[G5-live] 已执行口径成功率 25.0%（最终成功/已执行）| 计划口径成功率 25.0%（最终成功/计划 20）
+[G5-live] baseline-1 OK 362234ms exit=0
+[G5-live] baseline-2 OK 719886ms exit=0
+[G5-live] baseline-3 OK 632843ms exit=0
+[G5-live] baseline-4 OK 813062ms exit=0
+[G5-live] baseline-5 FAIL 67920ms exit=1
+[G5-live] baseline-6 FAIL 22803ms exit=1
+[G5-live] baseline-7 FAIL 36713ms exit=1
+[G5-live] baseline-8 FAIL 156888ms exit=1
+[G5-live] baseline-9 FAIL 107598ms exit=1
+[G5-live] baseline-10 FAIL 13080ms exit=1
+[G5-live] missing-data-1 FAIL 46534ms exit=1
+[G5-live] missing-data-2 FAIL 13608ms exit=1
+[G5-live] missing-data-3 FAIL 21287ms exit=1
+[G5-live] missing-data-4 FAIL 14452ms exit=1
+[G5-live] conflict-data-1 FAIL 129657ms exit=1
+[G5-live] conflict-data-2 FAIL 23454ms exit=1
+[G5-live] conflict-data-3 FAIL 96879ms exit=1
+[G5-live] illegal-order-1 FAIL 202677ms exit=1
+[G5-live] illegal-order-2 FAIL 25425ms exit=1
+[G5-live] illegal-order-3 OK 139786ms exit=0

@@ -351,3 +351,23 @@ setsid nohup node scripts/run-stability-live.mjs --parallel 1 --delay 60000 </de
 
 **判定**：#28 续跑当前被 sensenova 分钟级配额阻塞（外部依赖，同 #35 性质），
 非代码/脚本缺陷；等待配额恢复（或新 key 充值）后按上述命令续跑即可无缝接上断点。
+
+### 7.6 2026-08-26 强行试跑记录（配额穿插恢复验证）
+
+**执行**：按用户决定强行启动一轮（`--parallel 1 --delay 60000`，日志
+`artifacts/stability/live-run-force-20260826.log`）。20/20 case 全部执行完毕。
+
+**结果：成功 5/20（25%）**：
+
+| case | 结果 | 说明 |
+| --- | --- | --- |
+| baseline-1~4 | ✅ OK | 与 8-25 相同的成功记录（断点续跑语义，本轮未重跑） |
+| illegal-order-3 | ✅ OK（新增） | 模型未越序：明确停住向用户确认而非绕过 `KNOWLEDGE_RETRIEVAL_REQUIRED`，Guard 正确拦截，exit=0 |
+| 其余 15 例 | ❌ FAIL | 全部归类 **LIFECYCLE**（无 AUTH），13–203s 快速失败，特征与 8-25 基础设施层失败一致（sensenova 分钟级配额仍紧） |
+
+**Attempt-level**：累计 attempts 20 | 成功 5 | 失败 15（LIFECYCLE: 15）。
+
+**判定**：本轮新增 1 例业务正确行为证据（illegal-order Guard 拦截达标）；
+整体仍未达标（20/20、Correct Gate 100% 未达成），阻塞不变——外部配额。
+8-26 试跑后 `live-results.jsonl` 保留全部 20 条记录（成功 5 条为断点），
+后续配额窗口恢复后按 §7.5 命令续跑，脚本会自动跳过已成功 key。
